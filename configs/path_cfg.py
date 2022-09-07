@@ -1,8 +1,11 @@
 import os
+import sys
+IN_COLAB = 'google.colab' in sys.modules
+
 
 cwd = os.getcwd()
 
-if(cwd == '/content'):
+if(IN_COLAB):
     # colab config
     MOTSYNTH_ROOT = cwd + '/gdrive/MyDrive/CVCS/storag/MOTSynth'
     MOTCHA_ROOT = cwd + '/gdrive/MyDrive/CVCS/storage/MOTChallenge'

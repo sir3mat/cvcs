@@ -3,7 +3,7 @@ import sys
 import time
 
 import torch
-import torchvision.models.detection.mask_rcnn
+import torchvision.models.detection.faster_rcnn
 from . import utils
 from . import coco_eval
 from . import coco_utils
@@ -40,6 +40,7 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
 
             loss_value = losses_reduced.item()
 
+            # if problem with loss see below
             if not math.isfinite(loss_value):
                 print(f"Loss is {loss_value}, stopping training")
                 print(loss_dict_reduced)

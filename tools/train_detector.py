@@ -58,7 +58,7 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--lr",
-        default=0.2,
+        default=0.02,
         type=float,
         help="initial learning rate, 0.02 is the default value for training on 8 gpus and 2 images_per_gpu",
     )
@@ -228,6 +228,7 @@ def main(args):
         model = maskrcnn_resnet_fpn(
             pretrained=args.pretrained, num_classes=num_classes, **kwargs)
     if 'fasterrcnn' in args.model:
+        print("model is fasterrcnn")
         kwargs['backbone_name'] = args.backbone
         model = fasterrcnn_resnet_fpn(
             pretrained=args.pretrained, num_classes=num_classes, **kwargs)

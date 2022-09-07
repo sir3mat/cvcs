@@ -36,7 +36,7 @@ storage
 ```
 
 ## Colab Usage
-You can also use (Google Colab)[https://colab.research.google.com] if you need remote resources like GPUs.
+You can also use [Google Colab](https://colab.research.google.com) if you need remote resources like GPUs.
 In the notebook folder you can find some useful .ipynb files and remember to load the storage folder in your GDrive before usage.
 
 ## Object Detection

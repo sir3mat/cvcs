@@ -7,9 +7,9 @@ cwd = os.getcwd()
 
 if(IN_COLAB):
     # colab config
-    MOTSYNTH_ROOT = cwd + '/gdrive/MyDrive/CVCS/storag/MOTSynth'
-    MOTCHA_ROOT = cwd + '/gdrive/MyDrive/CVCS/storage/MOTChallenge'
-    OUTPUT_DIR = cwd + '/gdrive/MyDrive/CVCS/storage/motsynth_output'
+    MOTSYNTH_ROOT = '/content/gdrive/MyDrive/CVCS/storag/MOTSynth'
+    MOTCHA_ROOT = '/content/gdrive/MyDrive/CVCS/storage/MOTChallenge'
+    OUTPUT_DIR = '/content/gdrive/MyDrive/CVCS/storage/motsynth_output'
 else:
     # windows config
     MOTSYNTH_ROOT = cwd + '\storage\MOTSynth'

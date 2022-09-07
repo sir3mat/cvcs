@@ -3,9 +3,13 @@
 This repository provide the implementation of our paper "NAME OF PAPER" delivered for the "Computer Vision and Cognitive System" course [@UNIMORE](https://www.unimore.it/)
 
 ## Installation
+N.B.: Installation only avaiable in win64 environments
+
 Create and activate an environment with all required packages:
 ```
-conda create --name cvcs --file environment.txt
+conda create --name cvcspw --file environment.txt
+pip install https://github.com/phil-bergmann/tracking_wo_bnw/archive/master.zip
+pip install -r deps/win/pip_requirements.txt 
 ```
 
 ## Dataset Download and Preparation:
@@ -31,6 +35,9 @@ storage
 
 ```
 
+## Colab Usage
+You can also use (Google Colab)[https://colab.research.google.com] if you need remote resources like GPUs.
+In the notebook folder you can find some useful .ipynb files and remember to load the storage folder in your GDrive before usage.
 
 ## Object Detection
 We adapt torchvision's detection reference code to train Faster R-CNN on a portion of the MOTSynth dataset. To train Faster R-CNN with a ResNet50 with FPN backbone, you can run the following:

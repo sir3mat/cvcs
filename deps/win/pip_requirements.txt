@@ -1,0 +1,15 @@
+matplotlib==3.5.3
+Pillow==9.2.0
+pip==22.2.2
+pycocotools==2.0.4
+pycparser==2.21
+pyOpenSSL==22.0.0
+pyparsing==3.0.9
+pyreadline3==3.4.1
+PySocks==1.7.1
+python-dateutil==2.8.2
+torch==1.12.1
+torchaudio==0.12.1
+torchvision==0.13.1
+tracktor==0.0.1
+typing_extensions==4.3.0

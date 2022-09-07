@@ -1,2 +1,3 @@
 #storage folders
 storage/**
+error_causing_batch.pth

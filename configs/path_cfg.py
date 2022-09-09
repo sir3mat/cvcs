@@ -1,13 +1,15 @@
 import os
 import sys
-IN_COLAB = 'google.colab' in sys.modules
+import os
 
+IN_COLAB = False
+if 'COLAB_GPU' in os.environ:
+   IN_COLAB=True
 
 cwd = os.getcwd()
 
 if(IN_COLAB):
-    # colab config
-    MOTSYNTH_ROOT = '/content/gdrive/MyDrive/CVCS/storag/MOTSynth'
+    MOTSYNTH_ROOT = '/content/gdrive/MyDrive/CVCS/storage/MOTSynth'
     MOTCHA_ROOT = '/content/gdrive/MyDrive/CVCS/storage/MOTChallenge'
     OUTPUT_DIR = '/content/gdrive/MyDrive/CVCS/storage/motsynth_output'
 else:

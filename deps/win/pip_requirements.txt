@@ -21,9 +21,9 @@ requests==2.28.1
 seaborn==0.12.0
 setuptools==63.4.1
 six==1.16.0
-torch==1.12.1+cu116
-torchaudio==0.12.1+cu116
-torchvision==0.13.1+cu116
+torch==1.12.1
+torchaudio==0.12.1
+torchvision==0.13.1
 tracktor==0.0.1
 typing_extensions==4.3.0
 urllib3==1.26.12

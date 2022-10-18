@@ -16,7 +16,6 @@ conda activate cvcspw
 
 # in case of error with cuda
 # conda install pytorch torchvision torchaudio cudatoolkit=11.6 -c pytorch -c conda-forge
-pip install https://github.com/phil-bergmann/tracking_wo_bnw/archive/master.zip
 pip install -r deps/win/pip_requirements.txt
 ```
 

@@ -31,7 +31,6 @@ sqlite=3.39.2=h2bbff1b_0
 torch=1.12.1+cu116=pypi_0
 torchaudio=0.12.1+cu116=pypi_0
 torchvision=0.13.1+cu116=pypi_0
-tracktor=0.0.1=pypi_0
 typing-extensions=4.3.0=pypi_0
 urllib3=1.26.12=pypi_0
 vc=14.2=h21ff451_1

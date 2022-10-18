@@ -24,7 +24,6 @@ six==1.16.0
 torch==1.12.1
 torchaudio==0.12.1
 torchvision==0.13.1
-tracktor==0.0.1
 typing_extensions==4.3.0
 urllib3==1.26.12
 wheel==0.37.1

@@ -7,8 +7,7 @@ import torch
 import logging
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 logging.getLogger('PIL').setLevel(logging.WARNING)
-
-matplotlib.style.use('ggplot')
+matplotlib.style.use('ggplot')   # type: ignore
 
 
 def save_plot(train_loss_list, label, output_dir):
@@ -37,3 +36,7 @@ def save_train_loss_plot(train_loss_dict: DefaultDict, output_dir):
 
 def plot_img_tensor(img_tensor):
     transforms.ToPILImage()(img_tensor).show()
+
+def show_bbox():
+    ...
+

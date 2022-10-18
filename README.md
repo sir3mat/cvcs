@@ -45,6 +45,14 @@ storage
 
 ```
 
+### Dataset annotation format
+
+MOT annotations in `/storage/mot_annotations/frame/gt/gt.txt` follow this format:
+
+```text
+<frame>, <id>, <bb_left>, <bb_top>, <bb_width>, <bb_height>, <conf>, <class>, <vis>, <x>, <y>, <z>
+```
+
 ## Colab Usage
 
 You can also use [Google Colab](https://colab.research.google.com) if you need remote resources like GPUs.
@@ -55,9 +63,7 @@ In the notebook folder you can find some useful .ipynb files and remember to loa
 We adapt torchvision's detection reference code to train Faster R-CNN on a portion of the MOTSynth dataset. To train Faster R-CNN with a ResNet50 with FPN backbone, you can run the following:
 
 ```
-python -m  tools.train_detector --model fasterrcnn_resnet50_fpn\
-    --batch-size 5 --world-size 1 --trainable-backbone-layers 1\
-    --backbone resnet50 --train-dataset train --epochs 10
+python -m  tools.train_detector --epochs 10
 ```
 
 ## Multi-Object Tracking

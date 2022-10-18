@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import matplotlib
 import torch
 import logging
+from torchvision.utils import draw_bounding_boxes
+
 logging.getLogger('matplotlib').setLevel(logging.WARNING)
 logging.getLogger('PIL').setLevel(logging.WARNING)
 matplotlib.style.use('ggplot')   # type: ignore
@@ -33,10 +35,9 @@ def save_train_loss_plot(train_loss_dict: DefaultDict, output_dir):
     for key in train_loss_dict.keys():
         save_plot(train_loss_dict[key], key, output_dir)
 
-
 def plot_img_tensor(img_tensor):
     transforms.ToPILImage()(img_tensor).show()
 
-def show_bbox():
-    ...
-
+def show_bbox(img, output, th):
+    img_with_bbbox = draw_bounding_boxes(img, boxes=output['boxes'][output['scores'] > th], width=4)
+    plot_img_tensor(img_with_bbbox)

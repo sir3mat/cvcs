@@ -4,6 +4,8 @@ import time
 
 import torch
 import torchvision.models.detection.faster_rcnn
+
+from src.detection.utils import plot_img_tensor
 from . import utils
 from . import coco_eval
 from . import coco_utils
@@ -15,7 +17,6 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
     metric_logger.add_meter("lr", utils.SmoothedValue(
         window_size=1, fmt="{value:.6f}"))
     header = f"Epoch: [{epoch}]"
-
     lr_scheduler = None
     if epoch == 0:
         warmup_factor = 1.0 / 1000
@@ -25,6 +26,16 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
             optimizer, start_factor=warmup_factor, total_iters=warmup_iters
         )
 
+    losses_dict = {
+        "lr": [],
+        "loss": [],
+        # loss rpn
+        "loss_objectness": [],
+        "loss_rpn_box_reg": [],
+        # roi heads
+        "loss_classifier": [],
+        "loss_box_reg": [],
+    }
     for images, targets in metric_logger.log_every(data_loader, print_freq, header):
         try:
             images = list(image.to(device) for image in images)
@@ -40,11 +51,15 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
 
             loss_value = losses_reduced.item()
 
+            # plot_img_tensor(images[0])
+            # print(targets[0])
+
             # if problem with loss see below
             if not math.isfinite(loss_value):
                 print(f"Loss is {loss_value}, stopping training")
                 print(loss_dict_reduced)
                 sys.exit(1)
+
         except Exception as exp:
             print("ERROR", str(exp))
             torch.save({'img': images, 'targets': targets},
@@ -65,8 +80,10 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
 
         metric_logger.update(loss=losses_reduced, **loss_dict_reduced)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
+        for name, meter in metric_logger.meters.items():
+            losses_dict[name].append(meter.global_avg)
 
-    return metric_logger
+    return metric_logger, losses_dict
 
 
 def _get_iou_types(model):
@@ -81,7 +98,7 @@ def _get_iou_types(model):
     return iou_types
 
 
-@torch.inference_mode()
+@ torch.inference_mode()
 def evaluate(model, data_loader, device, iou_types=None):
     n_threads = torch.get_num_threads()
     # FIXME remove this and make paste_masks_in_image run on the GPU
@@ -95,7 +112,6 @@ def evaluate(model, data_loader, device, iou_types=None):
     if iou_types is None:
         iou_types = _get_iou_types(model)
     coco_evaluator = coco_eval.CocoEvaluator(coco, iou_types)
-
     for images, targets in metric_logger.log_every(data_loader, 100, header):
         images = list(img.to(device) for img in images)
 
@@ -103,6 +119,9 @@ def evaluate(model, data_loader, device, iou_types=None):
             torch.cuda.synchronize()
         model_time = time.time()
         outputs = model(images)
+
+        # plot_img_tensor(images[0])
+        # print(outputs[0])
 
         outputs = [{k: v.to(cpu_device) for k, v in t.items()}
                    for t in outputs]
@@ -121,8 +140,13 @@ def evaluate(model, data_loader, device, iou_types=None):
     print("Averaged stats:", metric_logger)
     coco_evaluator.synchronize_between_processes()
 
-    # accumulate predictions from all images
+    # accumulate predictions from all images and print table with results
     coco_evaluator.accumulate()
-    coco_evaluator.summarize()
+    summary = coco_evaluator.summarize()
     torch.set_num_threads(n_threads)
+
+    # stats for cocoEVal
+    for iou_type, eval in coco_evaluator.coco_eval.items():
+        print(eval.stats)
+    print(summary)
     return coco_evaluator

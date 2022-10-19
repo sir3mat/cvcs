@@ -82,7 +82,6 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
         for name, meter in metric_logger.meters.items():
             losses_dict[name].append(meter.global_avg)
-
     return metric_logger, losses_dict
 
 
@@ -146,5 +145,5 @@ def evaluate(model, data_loader, device, iou_types=None):
 
     # stats summary from coco_evaluator.summarize()
     # print(summary)
-    
+
     return coco_evaluator

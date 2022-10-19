@@ -43,7 +43,7 @@ def get_args_parser(add_help=True):
 
     # training param
     parser.add_argument(
-        "-b", "--batch-size", default=1, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
+        "-b", "--batch-size", default=2, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
     )
     parser.add_argument("--epochs", default=26, type=int,
                         metavar="N", help="number of total epochs to run")
@@ -251,8 +251,8 @@ def resume_training(model, optimizer, lr_scheduler, scaler, args):
         scaler.load_state_dict(checkpoint["scaler"])
 
 
-def save_model_checkpoint(model, optimizer, lr_scheduler, epoch, scaler, args):
-    if args.output_dir:
+def save_model_checkpoint(model, optimizer, lr_scheduler, epoch, scaler, output_dir, args):
+    if output_dir:
         checkpoint = {
             "model": model.state_dict(),
             "optimizer": optimizer.state_dict(),
@@ -263,18 +263,18 @@ def save_model_checkpoint(model, optimizer, lr_scheduler, epoch, scaler, args):
         if args.amp:
             checkpoint["scaler"] = scaler.state_dict()
         utils.save_on_master(checkpoint, os.path.join(
-            args.output_dir, f"model_{epoch}.pth"))
+            output_dir, f"model_{epoch}.pth"))
         utils.save_on_master(checkpoint, os.path.join(
-            args.output_dir, "checkpoint.pth"))
+            output_dir, "checkpoint.pth"))
 
 
-def save_plot(losses_dict, batch_loss_dict):
+def save_plot(losses_dict, batch_loss_dict, output_dir):
     if not losses_dict:
         for name, metric in batch_loss_dict.items():
             losses_dict[name] = []
         for name, metric in batch_loss_dict.items():
             losses_dict[name].extend(metric)
-        save_train_loss_plot(losses_dict, OUTPUT_DIR)
+        save_train_loss_plot(losses_dict, osp.join(output_dir, "plots"))
 
 
 def show_sample(data_loader, model, device):
@@ -362,14 +362,14 @@ def main(args):
                                              epoch, args.print_freq, scaler)
         lr_scheduler.step()
         # save train loss plot
-        save_plot(losses_dict, batch_loss_dict)
+        save_plot(losses_dict, batch_loss_dict, output_dir)
 
         # save model
         if epoch % 2 == 0:
+            save_model_checkpoint(
+                model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
             evaluate(model, data_loader_test,
                      device=device, iou_types=['bbox'])
-            save_model_checkpoint(
-                model, optimizer, lr_scheduler, epoch, scaler, args)
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))

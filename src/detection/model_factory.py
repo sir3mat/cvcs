@@ -6,7 +6,6 @@ from torchvision.models.detection import FasterRCNN_ResNet50_FPN_V2_Weights
 from torchvision.models.resnet import ResNet50_Weights
 
 logger = logging.getLogger(__name__)
-coloredlogs.install(level='DEBUG')
 
 
 class ModelFactory:
@@ -18,13 +17,13 @@ class ModelFactory:
             # added for baseline
             backbone_weights = ResNet50_Weights.IMAGENET1K_V2
             model: FasterRCNN = fasterrcnn_resnet50_fpn_v2(
-                weights=weights, backbone_name=backbone_name, weights_backbone=backbone_weights, trainable_backbone_layers=0)
-            # num_classes = 2  # 1 class (person) + background
-            # # get number of input features for the classifier
-            # in_features = model.roi_heads.box_predictor.cls_score.in_features  # type: ignore
-            # # replace the pre-trained head with a new one
-            # model.roi_heads.box_predictor = FastRCNNPredictor(
-            #     in_features, num_classes)
+                weights=weights, backbone_name=backbone_name, weights_backbone=backbone_weights, trainable_backbone_layers=3)
+            num_classes = 2  # 1 class (person) + background
+            # get number of input features for the classifier
+            in_features = model.roi_heads.box_predictor.cls_score.in_features  # type: ignore
+            # replace the pre-trained head with a new one
+            model.roi_heads.box_predictor = FastRCNNPredictor(
+                in_features, num_classes)
         else:
             logger.error(
                 "Please, provide a valid model as argument. Select one of the following: fasterrcnn.")

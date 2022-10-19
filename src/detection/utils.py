@@ -6,6 +6,8 @@ import torch
 import logging
 from torchvision.utils import draw_bounding_boxes
 matplotlib.style.use('ggplot')
+logging.getLogger('matplotlib').setLevel(logging.CRITICAL)
+logging.getLogger('PIL').setLevel(logging.CRITICAL)
 
 
 def save_plot(train_loss_list, label, output_dir):

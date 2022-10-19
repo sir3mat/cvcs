@@ -277,6 +277,15 @@ def save_plot(losses_dict, batch_loss_dict):
         save_train_loss_plot(losses_dict, OUTPUT_DIR)
 
 
+def show_sample(data_loader, model, device):
+    for imgs, target in data_loader:
+        with torch.no_grad():
+            prediction = model([imgs[0].to(device)])[0]
+        show_bbox(imgs[0], prediction, 0.75)
+        show_bbox(imgs[0], target[0]['boxes'])
+        break
+
+
 def main(args):
     output_dir = None
     if args.output_dir:
@@ -293,6 +302,7 @@ def main(args):
     logger.debug("CREATE DATASETS")
     dataset_train = dataset_train_no_random = dataset_test = None
 
+    # TODO test and refactoring dataset generation
     if args.train_dataset == "motsynth":
         dataset_train, _ = create_dataset(
             args.train_dataset, MOTSYNTH_ROOT, get_transform(True, args))
@@ -323,16 +333,10 @@ def main(args):
     model.to(device)
 
     if args.test_only:
+        # TODO add support to load weights of a model
         logger.debug("TEST ONLY")
         evaluate(model, data_loader_test, device=device, iou_types=['bbox'])
-        # after evaluating
-        # pick one image from the test set and evaluate it to show bbox
-        for imgs, target in data_loader_train_no_random:
-            with torch.no_grad():
-                prediction = model([imgs[0].to(device)])[0]
-            show_bbox(imgs[0], prediction, 0.75)
-            show_bbox(imgs[0], target[0]['boxes'])
-            break
+        show_sample(data_loader_train_no_random, model, device)
         return
 
     logger.debug("CREATE OPTIMIZER")
@@ -363,30 +367,13 @@ def main(args):
         # save model
         if epoch % 2 == 0:
             evaluate(model, data_loader_test,
-                              device=device, iou_types=['bbox'])
+                     device=device, iou_types=['bbox'])
             save_model_checkpoint(
                 model, optimizer, lr_scheduler, epoch, scaler, args)
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     logger.debug(f"TRAINING TIME: {total_time_str}")
-
-    # after training
-    # pick one image from the test set and evaluate it to show bbox
-    data_loader = torch.utils.data.DataLoader(
-        dataset_train_no_random, batch_size=1, shuffle=False, num_workers=4,
-        collate_fn=utils.collate_fn)
-
-    for imgs, target in data_loader:
-        print(dataset_train._img_paths[0])
-
-        model.eval()
-        with torch.no_grad():
-            prediction = model([imgs[0].to(device)])[0]
-
-        show_bbox(imgs[0], prediction['boxes'])
-        show_bbox(imgs[0], target[0]['boxes'])
-        break
 
 
 if __name__ == "__main__":

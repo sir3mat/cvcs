@@ -274,7 +274,7 @@ def save_plot(losses_dict, batch_loss_dict, output_dir):
             losses_dict[name] = []
         for name, metric in batch_loss_dict.items():
             losses_dict[name].extend(metric)
-        save_train_loss_plot(losses_dict, osp.join(output_dir, "plots"))
+        save_train_loss_plot(losses_dict, output_dir)
 
 
 def show_sample(data_loader, model, device):

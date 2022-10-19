@@ -127,7 +127,7 @@ def get_args_parser(add_help=True):
     parser.add_argument("--output-dir", default='fasterrcnn_training',
                         type=str, help="path to save outputs")
 
-    parser.add_argument("--aspect-ratio-group-factor", default=3, type=int)
+    parser.add_argument("--aspect-ratio-group-factor", default=-1, type=int)
     parser.add_argument("--rpn-score-thresh", default=None,
                         type=float, help="rpn score threshold for faster-rcnn")
 
@@ -312,16 +312,16 @@ def main(args):
             args.val_dataset, MOTCHA_ROOT, get_transform(False, args))
 
     elif args.train_dataset == "mot17":
-        train_split_seqs = ['MOT17-02', 'MOT17-04', 'MOT17-05',
-                            'MOT17-09', 'MOT17-10', 'MOT17-11', 'MOT17-13']
-        test_split_seqs = ['MOT17-09']
+        train_split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN', 'MOT17-05-FRCNN',
+                            'MOT17-09-FRCNN', 'MOT17-10-FRCNN', 'MOT17-11-FRCNN', 'MOT17-13-FRCNN']
+        test_split_seqs = ['MOT17-09-FRCNN']
         for seq in test_split_seqs:
             train_split_seqs.remove(seq)
         dataset_train = MOTObjDetect(osp.join(MOTCHA_ROOT, "MOT17", 'train'), get_transform(
             True, args), split_seqs=train_split_seqs)
         dataset_train_no_random = MOTObjDetect(osp.join(
-            MOTCHA_ROOT, 'train'), get_transform(False, args), split_seqs=train_split_seqs)
-        dataset_test, _ = MOTObjDetect(osp.join(MOTCHA_ROOT, "MOT17", 'train'), get_transform(
+            MOTCHA_ROOT, "MOT17", 'train'), get_transform(False, args), split_seqs=train_split_seqs)
+        dataset_test = MOTObjDetect(osp.join(MOTCHA_ROOT, "MOT17", 'train'), get_transform(
             False, args), split_seqs=test_split_seqs)
 
     logger.debug("CREATE DATA LOADERS")

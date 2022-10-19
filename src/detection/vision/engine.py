@@ -107,7 +107,6 @@ def evaluate(model, data_loader, device, iou_types=None):
     model.eval()
     metric_logger = utils.MetricLogger(delimiter="  ")
     header = "Test:"
-
     coco = coco_utils.get_coco_api_from_dataset(data_loader.dataset)
     if iou_types is None:
         iou_types = _get_iou_types(model)
@@ -145,8 +144,7 @@ def evaluate(model, data_loader, device, iou_types=None):
     summary = coco_evaluator.summarize()
     torch.set_num_threads(n_threads)
 
-    # stats for cocoEVal
-    for iou_type, eval in coco_evaluator.coco_eval.items():
-        print(eval.stats)
-    print(summary)
+    # stats summary from coco_evaluator.summarize()
+    # print(summary)
+    
     return coco_evaluator

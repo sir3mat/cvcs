@@ -33,24 +33,17 @@ class ModelFactory:
             backbone_weights = ResNet50_Weights.IMAGENET1K_V2
             model: FasterRCNN = fasterrcnn_resnet50_fpn_v2(
                 weights=weights, backbone_name=backbone_name, weights_backbone=backbone_weights, trainable_backbone_layers=trainable_backbone_layers)
-            num_classes = 2  # 1 class (person) + background
-            in_features = model.roi_heads.box_predictor.cls_score.in_features
-            model.roi_heads.box_predictor = FastRCNNPredictor(
-                in_features, num_classes)
 
-        elif args.model == "frcnn_custom":
-            backbone_name = "resnet50"
-            weights = FasterRCNN_ResNet50_FPN_V2_Weights.COCO_V1
-            trainable_backbone_layers = 0
-            backbone_weights = ResNet50_Weights.IMAGENET1K_V2
-            model: FasterRCNN = fasterrcnn_resnet50_fpn_v2(
-                weights=weights, backbone_name=backbone_name, weights_backbone=backbone_weights, trainable_backbone_layers=trainable_backbone_layers)
-
-            for param in model.features.parameters():
+            for param in model.rpn.parameters():
                 param.requires_grad = False
+            for param in model.roi_heads.parameters():
+                param.requires_grad = False
+            for param in model.backbone.fpn.parameters():
+                param.requires_grad = False
+
             set_seeds()
 
-            num_classes = 2
+            num_classes = 2  # 1 class (person) + background
             in_features = model.roi_heads.box_predictor.cls_score.in_features
             model.roi_heads.box_predictor = FastRCNNPredictor(
                 in_features, num_classes)
@@ -61,13 +54,12 @@ class ModelFactory:
             raise ValueError(args.model)
 
         # # Get a summary of the model (uncomment for full output)
-        summary(model,
-                # (batch_size, color_channels, height, width)
-                input_size=(args.batch_size, 3, 1920, 1080),
-                verbose=0,
-                col_names=["input_size", "output_size",
-                           "num_params", "trainable"],
-                col_width=20,
-                row_settings=["var_names"]
-                )
+        print(summary(model,
+                      # (batch_size, color_channels, height, width)
+                      input_size=(args.batch_size, 3, 1920, 1080),
+                      verbose=0,
+                      col_names=["input_size", "output_size",
+                                 "num_params", "trainable"],
+                      col_width=20,
+                      row_settings=["var_names"]))
         return model

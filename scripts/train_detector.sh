@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python -m  tools.train_detector --train-dataset mot17
+python -m  tools.train_detector

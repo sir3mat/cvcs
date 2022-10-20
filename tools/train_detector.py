@@ -10,7 +10,6 @@ import torch.utils.data
 from src.detection.vision.mot_data import MOTObjDetect
 from src.detection.model_factory import ModelFactory
 from src.detection.utils import save_train_loss_plot, show_bbox
-
 import src.detection.vision.presets as presets
 import src.detection.vision.utils as utils
 from src.detection.vision.engine import train_one_epoch, evaluate
@@ -153,10 +152,10 @@ def create_datasets(ds_train_name, ds_val_name, args):
     if ds_train_name == "motsynth_train":
         data_path = osp.join(
             MOTSYNTH_ROOT, 'comb_annotations', f"{ds_train_name}.json")
-        dataset_train = get_mot_dataset(
-            data_path, transforms=get_transform(True, args))
-        dataset_train_no_random = get_mot_dataset(
-            data_path, transforms=get_transform(False, args))
+        dataset_train = get_mot_dataset(MOTSYNTH_ROOT,
+                                        data_path, transforms=get_transform(True, args))
+        dataset_train_no_random = get_mot_dataset(MOTSYNTH_ROOT,
+                                                  data_path, transforms=get_transform(False, args))
 
     elif ds_train_name == "MOT17":
         train_split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN', 'MOT17-05-FRCNN',
@@ -175,20 +174,20 @@ def create_datasets(ds_train_name, ds_val_name, args):
     if ds_val_name == "motsynth_val":
         data_path = osp.join(
             MOTSYNTH_ROOT, 'comb_annotations', f"{ds_val_name}.json")
-        dataset_val = get_mot_dataset(
-            data_path, transforms=get_transform(False, args))
+        dataset_val = get_mot_dataset(MOTSYNTH_ROOT,
+                                      data_path, transforms=get_transform(False, args))
 
     elif ds_val_name == "MOT17":
         test_split_seqs = ['MOT17-09-FRCNN']
-        dataset_test = MOTObjDetect(data_path, get_transform(
+        dataset_val = MOTObjDetect(data_path, get_transform(
             False, args), split_seqs=test_split_seqs)
 
     else:
         logger.error(
             "Please, provide a valid ds_val_name as argument. Select one of the following: motsynth_val, MOT17.")
         raise ValueError(ds_val_name)
-    
-    return dataset_train, dataset_train_no_random, dataset_test
+
+    return dataset_train, dataset_train_no_random, dataset_val
 
 
 def create_data_loaders(dataset_train, dataset_train_no_random, dataset_test, args):
@@ -285,12 +284,14 @@ def save_model_checkpoint(model, optimizer, lr_scheduler, epoch, scaler, output_
 
 
 def save_plot(losses_dict, batch_loss_dict, output_dir):
+    utils.mkdir(output_dir)
     if not losses_dict:
         for name, metric in batch_loss_dict.items():
             losses_dict[name] = []
-        for name, metric in batch_loss_dict.items():
-            losses_dict[name].extend(metric)
-        save_train_loss_plot(losses_dict, output_dir)
+
+    for name, metric in batch_loss_dict.items():
+        losses_dict[name].extend(metric)
+    save_train_loss_plot(losses_dict, output_dir)
 
 
 def show_sample(data_loader, model, device):
@@ -317,7 +318,7 @@ def main(args):
 
     logger.debug("CREATE DATASETS")
     dataset_train, dataset_train_no_random, dataset_test = create_datasets(
-        args.train_dataset, args.val_dataset)
+        args.train_dataset, args.val_dataset, args)
 
     logger.debug("CREATE DATA LOADERS")
     data_loader_train, data_loader_train_no_random, data_loader_test = create_data_loaders(
@@ -356,7 +357,8 @@ def main(args):
                                              epoch, args.print_freq, scaler)
         lr_scheduler.step()
         # save train loss plot
-        save_plot(losses_dict, batch_loss_dict, output_dir)
+        save_plot(losses_dict, batch_loss_dict,
+                  output_dir=osp.join(output_dir, "losses_plots"))
 
         # save model
         if epoch % 2 == 0:

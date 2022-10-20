@@ -14,10 +14,10 @@ class ModelFactory:
         if args.model == "fasterrcnn_resnet50_fpn":
             backbone_name = "resnet50"
             weights = FasterRCNN_ResNet50_FPN_V2_Weights.COCO_V1
-            # added for baseline
+            trainable_backbone_layers = 1
             backbone_weights = ResNet50_Weights.IMAGENET1K_V2
             model: FasterRCNN = fasterrcnn_resnet50_fpn_v2(
-                weights=weights, backbone_name=backbone_name, weights_backbone=backbone_weights, trainable_backbone_layers=3)
+                weights=weights, backbone_name=backbone_name, weights_backbone=backbone_weights, trainable_backbone_layers=trainable_backbone_layers)
             num_classes = 2  # 1 class (person) + background
             # get number of input features for the classifier
             in_features = model.roi_heads.box_predictor.cls_score.in_features  # type: ignore

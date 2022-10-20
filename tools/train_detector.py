@@ -28,10 +28,10 @@ def get_args_parser(add_help=True):
         description="PyTorch Detection Training", add_help=add_help)
 
     # train and validtion dataset params
-    parser.add_argument("--train-dataset", default="motsynth",
-                        type=str, help="dataset name")
-    parser.add_argument("--val-dataset", default="MOT17",
-                        type=str, help="dataset name")
+    parser.add_argument("--train-dataset", default="motsynth_train",
+                        type=str, help="dataset name. Please select one of the following: motsynth_train, MOT17")
+    parser.add_argument("--val-dataset", default="motsynth_val",
+                        type=str, help="dataset name. Please select one of the following: motsynth_val, MOT17")
 
     # model param
     parser.add_argument(
@@ -147,32 +147,48 @@ def get_transform(train, args):
         return presets.DetectionPresetEval()
 
 
-def get_dataset(name, data_path, transform):
-    if name == 'motsynth':
-        ann_file = osp.join(data_path, 'comb_annotations', 'train.json')
+def create_datasets(ds_train_name, ds_val_name, args):
+    dataset_train = dataset_train_no_random = dataset_val = None
 
-    elif name == 'MOT17':
-        ann_file = osp.join(
-            data_path, 'motcha_coco_annotations', 'MOT17_train.json')
+    if ds_train_name == "motsynth_train":
+        data_path = osp.join(
+            MOTSYNTH_ROOT, 'comb_annotations', f"{ds_train_name}.json")
+        dataset_train = get_mot_dataset(
+            data_path, transforms=get_transform(True, args))
+        dataset_train_no_random = get_mot_dataset(
+            data_path, transforms=get_transform(False, args))
+
+    elif ds_train_name == "MOT17":
+        train_split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN', 'MOT17-05-FRCNN',
+                            'MOT17-10-FRCNN', 'MOT17-11-FRCNN', 'MOT17-13-FRCNN']
+        data_path = osp.join(MOTCHA_ROOT, "MOT17", "train")
+        dataset_train = MOTObjDetect(data_path, get_transform(
+            True, args), split_seqs=train_split_seqs)
+        dataset_train_no_random = MOTObjDetect(
+            data_path, get_transform(False, args), split_seqs=train_split_seqs)
 
     else:
         logger.error(
-            "Please, provide a valid dataset as argument. Select one of the following: motsynth, MOT17_train.")
-        raise ValueError(name)
+            "Please, provide a valid ds_train_name as argument. Select one of the following: motsynth_train, MOT17.")
+        raise ValueError(ds_train_name)
 
-    logger.debug(
-        f"get_dataset -> ann_file: {ann_file}, data_path: {data_path}")
+    if ds_val_name == "motsynth_val":
+        data_path = osp.join(
+            MOTSYNTH_ROOT, 'comb_annotations', f"{ds_val_name}.json")
+        dataset_val = get_mot_dataset(
+            data_path, transforms=get_transform(False, args))
 
-    ds = get_mot_dataset(data_path, ann_file, transforms=transform)
-    return ds, 2
+    elif ds_val_name == "MOT17":
+        test_split_seqs = ['MOT17-09-FRCNN']
+        dataset_test = MOTObjDetect(data_path, get_transform(
+            False, args), split_seqs=test_split_seqs)
 
-
-def create_dataset(name: str, data_path: str, transform):
-    logger.debug(
-        f"create_dataset -> name: {name}, data path: {data_path}")
-    dataset, num_classes = get_dataset(
-        name, data_path, transform)
-    return dataset, num_classes
+    else:
+        logger.error(
+            "Please, provide a valid ds_val_name as argument. Select one of the following: motsynth_val, MOT17.")
+        raise ValueError(ds_val_name)
+    
+    return dataset_train, dataset_train_no_random, dataset_test
 
 
 def create_data_loaders(dataset_train, dataset_train_no_random, dataset_test, args):
@@ -300,29 +316,8 @@ def main(args):
     logger.debug(f"DEVICE: {device}")
 
     logger.debug("CREATE DATASETS")
-    dataset_train = dataset_train_no_random = dataset_test = None
-
-    # TODO test and refactoring dataset generation
-    if args.train_dataset == "motsynth":
-        dataset_train, _ = create_dataset(
-            args.train_dataset, MOTSYNTH_ROOT, get_transform(True, args))
-        dataset_train_no_random, _ = create_dataset(
-            args.train_dataset, MOTSYNTH_ROOT, get_transform(False, args))
-        dataset_test, _ = create_dataset(
-            args.val_dataset, MOTCHA_ROOT, get_transform(False, args))
-
-    elif args.train_dataset == "mot17":
-        train_split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN', 'MOT17-05-FRCNN',
-                            'MOT17-09-FRCNN', 'MOT17-10-FRCNN', 'MOT17-11-FRCNN', 'MOT17-13-FRCNN']
-        test_split_seqs = ['MOT17-09-FRCNN']
-        for seq in test_split_seqs:
-            train_split_seqs.remove(seq)
-        dataset_train = MOTObjDetect(osp.join(MOTCHA_ROOT, "MOT17", 'train'), get_transform(
-            True, args), split_seqs=train_split_seqs)
-        dataset_train_no_random = MOTObjDetect(osp.join(
-            MOTCHA_ROOT, "MOT17", 'train'), get_transform(False, args), split_seqs=train_split_seqs)
-        dataset_test = MOTObjDetect(osp.join(MOTCHA_ROOT, "MOT17", 'train'), get_transform(
-            False, args), split_seqs=test_split_seqs)
+    dataset_train, dataset_train_no_random, dataset_test = create_datasets(
+        args.train_dataset, args.val_dataset)
 
     logger.debug("CREATE DATA LOADERS")
     data_loader_train, data_loader_train_no_random, data_loader_test = create_data_loaders(
@@ -333,7 +328,6 @@ def main(args):
     model.to(device)
 
     if args.test_only:
-        # TODO add support to load weights of a model
         logger.debug("TEST ONLY")
         evaluate(model, data_loader_test, device=device, iou_types=['bbox'])
         show_sample(data_loader_train_no_random, model, device)

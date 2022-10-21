@@ -249,7 +249,7 @@ def create_lr_scheduler(optimizer, lr_scheduler_type, lr_steps, lr_gamma, epochs
     return lr_scheduler
 
 
-def resume_training(model, optimizer, lr_scheduler, scaler, resume, start_epoch, amp):
+def resume_training(model, optimizer, lr_scheduler, scaler, args):
     checkpoint = torch.load(args.resume, map_location="cpu")
 
     model.load_state_dict(checkpoint["model"])

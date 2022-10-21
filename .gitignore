@@ -1,3 +1,7 @@
 #storage folders
 storage/**
 error_causing_batch.pth
+configs/__pychache__/**
+src/__pychache__/**
+src/detection/__pychache__/**
+tools/__pycache__/**

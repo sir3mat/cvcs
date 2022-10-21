@@ -1,10 +1,8 @@
 import logging
 import torch
-from torch import nn
 from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn_v2, FasterRCNN, FastRCNNPredictor
 from torchvision.models.detection import FasterRCNN_ResNet50_FPN_V2_Weights
 from torchvision.models.resnet import ResNet50_Weights
-from torchinfo import summary
 
 logger = logging.getLogger(__name__)
 
@@ -23,16 +21,16 @@ def set_seeds(seed: int = 42):
 
 class ModelFactory:
     @staticmethod
-    def get_model(args):
-        logger.debug(f"get_model -> model:{args.model}")
+    def get_model(name, weights, backbone, backbone_weights, trainable_backbone_layers):
+        logger.debug(f"get_model -> model:{name}")
 
-        if args.model == "fasterrcnn_resnet50_fpn":
-            backbone_name = "resnet50"
-            weights = FasterRCNN_ResNet50_FPN_V2_Weights.COCO_V1
-            trainable_backbone_layers = 1
-            backbone_weights = ResNet50_Weights.IMAGENET1K_V2
+        if name == "fasterrcnn_resnet50_fpn":
+            # backbone = backbone
+            model_weights = FasterRCNN_ResNet50_FPN_V2_Weights[weights]
+            model_backbone_weights = ResNet50_Weights[backbone_weights]
+            # trainable_backbone_layers = 1
             model: FasterRCNN = fasterrcnn_resnet50_fpn_v2(
-                weights=weights, backbone_name=backbone_name, weights_backbone=backbone_weights, trainable_backbone_layers=trainable_backbone_layers)
+                weights=model_weights, backbone_name=backbone, weights_backbone=model_backbone_weights, trainable_backbone_layers=trainable_backbone_layers)
 
             for param in model.rpn.parameters():
                 param.requires_grad = False
@@ -50,16 +48,7 @@ class ModelFactory:
 
         else:
             logger.error(
-                "Please, provide a valid model as argument. Select one of the following: fasterrcnn.")
-            raise ValueError(args.model)
+                "Please, provide a valid model as argument. Select one of the following: fasterrcnn_resnet50_fpn.")
+            raise ValueError(name)
 
-        # # Get a summary of the model (uncomment for full output)
-        print(summary(model,
-                      # (batch_size, color_channels, height, width)
-                      input_size=(args.batch_size, 3, 1920, 1080),
-                      verbose=0,
-                      col_names=["input_size", "output_size",
-                                 "num_params", "trainable"],
-                      col_width=20,
-                      row_settings=["var_names"]))
         return model

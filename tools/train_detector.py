@@ -173,6 +173,7 @@ def create_datasets(ds_train_name, ds_val_name, data_augmentation):
 
     elif ds_val_name == "MOT17":
         test_split_seqs = ['MOT17-09-FRCNN']
+        data_path = osp.join(MOTCHA_ROOT, "MOT17", "train")
         dataset_val = MOTObjDetect(data_path, get_transform(
             False, data_augmentation), split_seqs=test_split_seqs)
 

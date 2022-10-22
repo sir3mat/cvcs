@@ -4,8 +4,6 @@ import time
 
 import torch
 import torchvision.models.detection.faster_rcnn
-
-from src.detection.utils import plot_img_tensor
 from . import utils
 from . import coco_eval
 from . import coco_utils
@@ -50,9 +48,6 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
             losses_reduced = sum(loss for loss in loss_dict_reduced.values())
 
             loss_value = losses_reduced.item()
-
-            # plot_img_tensor(images[0])
-            # print(targets[0])
 
             # if problem with loss see below
             if not math.isfinite(loss_value):
@@ -117,9 +112,6 @@ def evaluate(model, data_loader, device, iou_types=None):
             torch.cuda.synchronize()
         model_time = time.time()
         outputs = model(images)
-
-        # plot_img_tensor(images[0])
-        # print(outputs[0])
 
         outputs = [{k: v.to(cpu_device) for k, v in t.items()}
                    for t in outputs]

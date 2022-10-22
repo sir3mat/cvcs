@@ -1,3 +1,5 @@
+import numpy as np
+import torchvision.transforms.functional as F
 from torchvision import transforms
 from typing import DefaultDict
 import matplotlib.pyplot as plt
@@ -34,17 +36,40 @@ def save_train_loss_plot(train_loss_dict: DefaultDict, output_dir):
         save_plot(train_loss_dict[key], key, output_dir)
 
 
+def show(imgs):
+    if not isinstance(imgs, list):
+        imgs = [imgs]
+    fig, axs = plt.subplots(nrows=len(imgs), ncols=1,
+                            figsize=(45, 21), squeeze=False)
+    for i, img in enumerate(imgs):
+        img = img.detach()
+        img = F.to_pil_image(img)
+        img = np.asarray(img)
+        axs[i, 0].imshow(img)
+        axs[i, 0].set(xticklabels=[], yticklabels=[], xticks=[], yticks=[])
+
+
 def plot_img_tensor(img_tensor):
     transforms.ToPILImage()(img_tensor).show()
 
 
-def show_bbox(img, output, th=None):
-    img_to_show = torch.clip(img*255, 0, 255)
-    img_to_show = img_to_show.type(torch.uint8)
+def show_img(data_loader, model, device, th=0.7):
+    for imgs, target in data_loader:
+        with torch.no_grad():
+            prediction = model([imgs[0].to(device)])[0]
+        plot_img_tensor(add_bbox(imgs[0], prediction, th))
+        plot_img_tensor(add_bbox(imgs[0], target[0]['boxes']))
+        break
+
+
+def add_bbox(img, output, th=None):
+    img_canvas = img.copy()
+    img_canvas = torch.clip(img*255, 0, 255)
+    img_canvas = img_canvas.type(torch.uint8)
     if th == None:
         img_with_bbbox = draw_bounding_boxes(
-            img_to_show, boxes=output, width=4)
+            img_canvas, boxes=output, width=4)
     else:
         img_with_bbbox = draw_bounding_boxes(
-            img_to_show, boxes=output["boxes"][output['scores'] > th], width=4)
-    plot_img_tensor(img_with_bbbox)
+            img_canvas, boxes=output["boxes"][output['scores'] > th], width=4)
+    return img_with_bbbox

@@ -1,3 +1,4 @@
+from typing import List
 from configs.path_cfg import MOTSYNTH_ROOT, MOTCHA_ROOT, OUTPUT_DIR
 import datetime
 import os.path as osp
@@ -10,7 +11,7 @@ import torch
 import torch.utils.data
 from src.detection.vision.mot_data import MOTObjDetect
 from src.detection.model_factory import ModelFactory
-from src.detection.utils import save_train_loss_plot, show_bbox
+from src.detection.graph_utils import save_train_loss_plot
 import src.detection.vision.presets as presets
 import src.detection.vision.utils as utils
 from src.detection.vision.engine import train_one_epoch, evaluate
@@ -140,79 +141,60 @@ def get_transform(train, data_augmentation):
         return presets.DetectionPresetEval()
 
 
-def create_datasets(ds_train_name, ds_val_name, data_augmentation):
-    dataset_train = dataset_train_no_random = dataset_val = None
+def get_motsynth_dataset(ds_name: str, transforms):
+    data_path = osp.join(MOTSYNTH_ROOT, 'comb_annotations', f"{ds_name}.json")
+    dataset = get_mot_dataset(MOTSYNTH_ROOT, data_path, transforms=transforms)
+    return dataset
 
-    if ds_train_name == "motsynth_train":
-        data_path = osp.join(
-            MOTSYNTH_ROOT, 'comb_annotations', f"{ds_train_name}.json")
-        dataset_train = get_mot_dataset(MOTSYNTH_ROOT,
-                                        data_path, transforms=get_transform(True, data_augmentation))
-        dataset_train_no_random = get_mot_dataset(MOTSYNTH_ROOT,
-                                                  data_path, transforms=get_transform(False, data_augmentation))
 
-    elif ds_train_name == "MOT17":
-        train_split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN', 'MOT17-05-FRCNN',
-                            'MOT17-10-FRCNN', 'MOT17-11-FRCNN', 'MOT17-13-FRCNN']
-        data_path = osp.join(MOTCHA_ROOT, "MOT17", "train")
-        dataset_train = MOTObjDetect(data_path, get_transform(
-            True, data_augmentation), split_seqs=train_split_seqs)
-        dataset_train_no_random = MOTObjDetect(
-            data_path, get_transform(False, data_augmentation), split_seqs=train_split_seqs)
+def get_MOT17_dataset(split: str, split_seqs: List, transforms):
+    data_path = osp.join(MOTCHA_ROOT, "MOT17", "train")
+    dataset = MOTObjDetect(
+        data_path, transforms=transforms, split_seqs=split_seqs)
+    return dataset
 
-    else:
-        logger.error(
-            "Please, provide a valid ds_train_name as argument. Select one of the following: motsynth_train, MOT17.")
-        raise ValueError(ds_train_name)
 
-    if ds_val_name == "motsynth_val":
-        data_path = osp.join(
-            MOTSYNTH_ROOT, 'comb_annotations', f"{ds_val_name}.json")
-        dataset_val = get_mot_dataset(MOTSYNTH_ROOT,
-                                      data_path, transforms=get_transform(False, data_augmentation))
+def create_dataset(ds_name: str, transforms, split=None):
+    if (ds_name.startswith("motsynth")):
+        return get_motsynth_dataset(ds_name, transforms)
 
-    elif ds_val_name == "MOT17":
-        test_split_seqs = ['MOT17-09-FRCNN']
-        data_path = osp.join(MOTCHA_ROOT, "MOT17", "train")
-        dataset_val = MOTObjDetect(data_path, get_transform(
-            False, data_augmentation), split_seqs=test_split_seqs)
+    elif (ds_name.startswith("MOT17")):
+        if split == "train":
+            split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN', 'MOT17-05-FRCNN',
+                          'MOT17-10-FRCNN', 'MOT17-11-FRCNN', 'MOT17-13-FRCNN']
+        elif split == "test":
+            split_seqs = ['MOT17-09-FRCNN']
+        return get_MOT17_dataset(split, split_seqs, transforms)
 
     else:
         logger.error(
-            "Please, provide a valid ds_val_name as argument. Select one of the following: motsynth_val, MOT17.")
-        raise ValueError(ds_val_name)
-
-    return dataset_train, dataset_train_no_random, dataset_val
+            "Please, provide a valid dataset as argument. Select one of the following: motsynth_train, motsynth_val, MOT17.")
+        raise ValueError(ds_name)
 
 
-def create_data_loaders(dataset_train, dataset_train_no_random, dataset_test, batch_size, workers, aspect_ratio_group_factor):
-    # random sampling on training dataset
-    train_sampler = torch.utils.data.RandomSampler(dataset_train)
-    # sequential sampling on test dataset
-    test_sampler = torch.utils.data.SequentialSampler(dataset_test)
-
-    if aspect_ratio_group_factor >= 0:
-        group_ids = create_aspect_ratio_groups(
-            dataset_train, k=aspect_ratio_group_factor)
-        train_batch_sampler = GroupedBatchSampler(
-            train_sampler, group_ids, batch_size)
-    else:
-        train_batch_sampler = torch.utils.data.BatchSampler(
-            train_sampler, batch_size, drop_last=True)
-
-    # create train data loader
-    data_loader_train = torch.utils.data.DataLoader(
-        dataset_train, batch_sampler=train_batch_sampler, num_workers=workers, collate_fn=utils.collate_fn
-    )
-
-    data_loader_train_no_random = torch.utils.data.DataLoader(
-        dataset_train_no_random, batch_size=1, sampler=test_sampler, num_workers=workers, collate_fn=utils.collate_fn
-    )
-    # create test data loader
-    data_loader_test = torch.utils.data.DataLoader(
-        dataset_test, batch_size=1, sampler=test_sampler, num_workers=workers, collate_fn=utils.collate_fn
-    )
-    return data_loader_train, data_loader_train_no_random, data_loader_test
+def create_data_loader(dataset, split: str, batch_size, workers, aspect_ratio_group_factor=-1):
+    data_loader = None
+    if split == "train":
+        # random sampling on training dataset
+        train_sampler = torch.utils.data.RandomSampler(dataset)
+        if aspect_ratio_group_factor >= 0:
+            group_ids = create_aspect_ratio_groups(
+                dataset, k=aspect_ratio_group_factor)
+            train_batch_sampler = GroupedBatchSampler(
+                train_sampler, group_ids, batch_size)
+        else:
+            train_batch_sampler = torch.utils.data.BatchSampler(
+                train_sampler, batch_size, drop_last=True)
+        data_loader = torch.utils.data.DataLoader(
+            dataset, batch_sampler=train_batch_sampler, num_workers=workers, collate_fn=utils.collate_fn
+        )
+    elif split == "test":
+        # sequential sampling on test dataset
+        test_sampler = torch.utils.data.SequentialSampler(dataset)
+        data_loader = torch.utils.data.DataLoader(
+            dataset, batch_size=1, sampler=test_sampler, num_workers=workers, collate_fn=utils.collate_fn
+        )
+    return data_loader
 
 
 def create_optimizer(model, lr, momentum, weight_decay):
@@ -287,15 +269,6 @@ def save_plots(losses_dict, batch_loss_dict, output_dir):
     save_train_loss_plot(losses_dict, output_dir)
 
 
-def show_sample(data_loader, model, device):
-    for imgs, target in data_loader:
-        with torch.no_grad():
-            prediction = model([imgs[0].to(device)])[0]
-        show_bbox(imgs[0], prediction, 0.75)
-        show_bbox(imgs[0], target[0]['boxes'])
-        break
-
-
 def save_model_summary(model, output_dir, batch_size):
     with open(osp.join(output_dir, "summary.txt"), 'w', encoding="utf-8") as f:
         print(summary(model,
@@ -308,6 +281,11 @@ def save_model_summary(model, output_dir, batch_size):
                       row_settings=["var_names"]), file=f)
 
 
+def save_args(output_dir, args):
+    with open(osp.join(output_dir, "args.txt"), 'w', encoding="utf-8") as f:
+        print(args)
+
+
 def main(args):
 
     output_dir = None
@@ -318,6 +296,10 @@ def main(args):
     output_plots_dir = osp.join(output_dir, "plots")
     utils.mkdir(output_plots_dir)
 
+    logger.debug("COMMAND LINE ARGUMENTS")
+    logger.debug(args)
+    save_args(output_dir, args)
+
     device = torch.device(args.device)
     logger.debug(f"DEVICE: {device}")
 
@@ -325,15 +307,20 @@ def main(args):
     ds_train_name = args.train_dataset
     ds_val_name = args.val_dataset
     data_augmentation = args.data_augmentation
-    dataset_train, dataset_train_no_random, dataset_test = create_datasets(
-        ds_train_name, ds_val_name, data_augmentation)
+
+    dataset_train = create_dataset(
+        ds_train_name, get_transform(True, data_augmentation), "train")
+    dataset_test = create_dataset(
+        ds_val_name, get_transform(False, data_augmentation), "test")
 
     logger.debug("CREATE DATA LOADERS")
     batch_size = args.batch_size
     workers = args.workers
     aspect_ratio_group_factor = args.aspect_ratio_group_factor
-    data_loader_train, data_loader_train_no_random, data_loader_test = create_data_loaders(
-        dataset_train, dataset_train_no_random, dataset_test, batch_size, workers, aspect_ratio_group_factor)
+    data_loader_train = create_data_loader(
+        dataset_train, "train", batch_size, workers, aspect_ratio_group_factor)
+    data_loader_test = create_data_loader(
+        dataset_test, "test", batch_size, workers)
 
     logger.debug("CREATE MODEL")
     model_name = args.model
@@ -349,7 +336,6 @@ def main(args):
     if args.test_only:
         logger.debug("TEST ONLY")
         evaluate(model, data_loader_test, device=device, iou_types=['bbox'])
-        show_sample(data_loader_train_no_random, model, device)
         return
 
     logger.debug("CREATE OPTIMIZER")
@@ -401,6 +387,4 @@ def main(args):
 
 if __name__ == "__main__":
     args = get_args_parser().parse_args()
-    logger.debug("COMMAND LINE ARGUMENTS")
-    logger.debug(args)
     main(args)

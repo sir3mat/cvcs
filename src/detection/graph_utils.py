@@ -47,6 +47,7 @@ def show(imgs):
         img = np.asarray(img)
         axs[i, 0].imshow(img)
         axs[i, 0].set(xticklabels=[], yticklabels=[], xticks=[], yticks=[])
+    plt.show()
 
 
 def plot_img_tensor(img_tensor):
@@ -63,13 +64,21 @@ def show_img(data_loader, model, device, th=0.7):
 
 
 def add_bbox(img, output, th=None):
-    img_canvas = img.copy()
+    img_canvas = img.clone()
     img_canvas = torch.clip(img*255, 0, 255)
     img_canvas = img_canvas.type(torch.uint8)
+
     if th == None:
         img_with_bbbox = draw_bounding_boxes(
             img_canvas, boxes=output, width=4)
     else:
+        scores_list = [score for score in (
+            output["scores"][output["scores"] > th]).tolist()]
+        labels_list = [str(label) for label in (
+            output["labels"][output["scores"] > th]).tolist()]
+        labels = ["person" for label in labels_list if label == "1"]
+        for i in range(0, len(scores_list)):
+            labels[i] = f"{labels[i]}:{scores_list[i]:.3f}"
         img_with_bbbox = draw_bounding_boxes(
-            img_canvas, boxes=output["boxes"][output['scores'] > th], width=4)
+            img_canvas, boxes=output["boxes"][output['scores'] > th], labels=labels, width=4)
     return img_with_bbbox

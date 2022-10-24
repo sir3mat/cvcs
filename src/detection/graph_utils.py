@@ -72,13 +72,16 @@ def add_bbox(img, output, th=None):
         img_with_bbbox = draw_bounding_boxes(
             img_canvas, boxes=output, width=4)
     else:
+        mask = (output["scores"] > th) & (output["labels"] == 1)
         scores_list = [score for score in (
-            output["scores"][output["scores"] > th]).tolist()]
+            output["scores"][mask]).tolist()]
         labels_list = [str(label) for label in (
-            output["labels"][output["scores"] > th]).tolist()]
+            output["labels"][mask]).tolist()]
         labels = ["person" for label in labels_list if label == "1"]
-        for i in range(0, len(scores_list)):
+        assert len(labels) == len(scores_list) == len(labels_list)
+
+        for i in range(0, len(labels)):
             labels[i] = f"{labels[i]}:{scores_list[i]:.3f}"
         img_with_bbbox = draw_bounding_boxes(
-            img_canvas, boxes=output["boxes"][output['scores'] > th], labels=labels, width=4)
+            img_canvas, boxes=output["boxes"][mask], labels=labels, width=4)
     return img_with_bbbox

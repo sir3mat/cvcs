@@ -126,7 +126,7 @@ def get_args_parser(add_help=True):
     # training param
     parser.add_argument("--start_epoch", default=0,
                         type=int, help="start epoch")
-    parser.add_argument("--epochs", default=26, type=int,
+    parser.add_argument("--epochs", default=30, type=int,
                         metavar="N", help="number of total epochs to run")
     parser.add_argument("--print-freq", default=20,
                         type=int, help="print frequency")
@@ -201,14 +201,6 @@ def create_optimizer(model, lr, momentum, weight_decay):
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.SGD(
         params, lr=lr, momentum=momentum, weight_decay=weight_decay)
-
-    # Total parameters and trainable parameters.
-    total_params = sum(p.numel() for p in model.parameters())
-    total_trainable_params = sum(
-        p.numel() for p in model.parameters() if p.requires_grad)
-    logger.debug(
-        f"Total trainable params: {total_trainable_params:}, Total params: {total_params}, lr: {lr}, momentum: {momentum}, weight_decay:{weight_decay}")
-
     return optimizer
 
 
@@ -283,7 +275,7 @@ def save_model_summary(model, output_dir, batch_size):
 
 def save_args(output_dir, args):
     with open(osp.join(output_dir, "args.txt"), 'w', encoding="utf-8") as f:
-        print(args)
+        print(args, file=f)
 
 
 def main(args):

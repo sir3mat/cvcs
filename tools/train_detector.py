@@ -327,7 +327,8 @@ def main(args):
 
     if args.test_only:
         logger.debug("TEST ONLY")
-        evaluate(model, data_loader_test, device=device, iou_types=['bbox'])
+        evaluate(model, data_loader_test,
+                 device=device, iou_types=['bbox'])
         return
 
     logger.debug("CREATE OPTIMIZER")
@@ -366,11 +367,10 @@ def main(args):
                    output_dir=output_plots_dir)
 
         # save model
-        if epoch % 2 == 0:
-            save_model_checkpoint(
-                model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
-            evaluate(model, data_loader_test,
-                     device=device, iou_types=['bbox'])
+        save_model_checkpoint(
+            model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
+        evaluate(model, data_loader_test,
+                 device=device, iou_types=['bbox'])
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))

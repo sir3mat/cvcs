@@ -386,7 +386,7 @@ def main(args):
             model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
         coco_evaluator = evaluate(model, data_loader_test,
                                   device=device, iou_types=['bbox'])
-        save_evaluate_smmary(
+        save_evaluate_summary(
             coco_evaluator.coco_eval['bbox'].stats, output_dir)
 
     total_time = time.time() - start_time

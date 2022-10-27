@@ -278,7 +278,7 @@ def save_args(output_dir, args):
         print(args, file=f)
 
 
-def save_evaluate_smmary(stats, output_dir):
+def save_evaluate_summary(stats, output_dir):
 
     metrics = ["AP", "AP50", "AP75", "APs", "APm", "APl"]
     # the standard metrics
@@ -342,6 +342,8 @@ def main(args):
         logger.debug("TEST ONLY")
         evaluate(model, data_loader_test,
                  device=device, iou_types=['bbox'])
+        save_evaluate_summary(
+            coco_evaluator.coco_eval['bbox'].stats, output_dir)
         return
 
     logger.debug("CREATE OPTIMIZER")

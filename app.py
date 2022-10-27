@@ -22,7 +22,7 @@ def load_model(baseline: bool = False):
         in_features = model.roi_heads.box_predictor.cls_score.in_features
         model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
         checkpoint = torch.load(osp.join(OUTPUT_DIR, "detection_logs",
-                                "fasterrcnn_training_exp1", "checkpoint.pth"), map_location="cpu")
+                                "exp_motsynth_30_3layers_sgd_lr_0.05_2", "checkpoint.pth"), map_location="cpu")
         model.load_state_dict(checkpoint["model"])
     model = model.eval()
     return model
@@ -53,11 +53,12 @@ description = "<p style='text-align: center'>Performance comparision of Faster R
 examples = [[osp.join(MOTCHA_ROOT, "MOT17", "train",
                       "MOT17-09-DPM", "img1", "000001.jpg")]]
 
-io_custom = gr.Interface(detect_with_resnet50Model_finetuning_motsynth, gr.Image(type="pil"), gr.Image(
-    type="file", shape=(1920, 1080), label="FasterR-CNN_Resnet50_FinteTuning_MOTSyth"))
 
 io_baseline = gr.Interface(detect_with_resnet50Model_baseline, gr.Image(type="pil"), gr.Image(
     type="file", shape=(1920, 1080), label="FasterR-CNN_Resnet50_COCO"))
+    
+io_custom = gr.Interface(detect_with_resnet50Model_finetuning_motsynth, gr.Image(type="pil"), gr.Image(
+    type="file", shape=(1920, 1080), label="FasterR-CNN_Resnet50_FinteTuning_MOTSyth"))
 
 gr.Parallel(io_baseline, io_custom, title=title,
             description=description, examples=examples).launch(enable_queue=True)

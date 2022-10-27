@@ -190,7 +190,7 @@ def create_data_loader(dataset, split: str, batch_size, workers, aspect_ratio_gr
         )
     elif split == "test":
         # sequential sampling on test dataset
-        test_sampler = torch.utils.data.SequentialSampler(dataset)
+        test_sampler = torch.utils.data.RandomSampler(dataset)
         data_loader = torch.utils.data.DataLoader(
             dataset, batch_size=1, sampler=test_sampler, num_workers=workers, collate_fn=utils.collate_fn
         )
@@ -276,6 +276,19 @@ def save_model_summary(model, output_dir, batch_size):
 def save_args(output_dir, args):
     with open(osp.join(output_dir, "args.txt"), 'w', encoding="utf-8") as f:
         print(args, file=f)
+
+
+def save_evaluate_smmary(stats, output_dir):
+
+    metrics = ["AP", "AP50", "AP75", "APs", "APm", "APl"]
+    # the standard metrics
+    results = {
+        metric: float(stats[idx] *
+                      100 if stats[idx] >= 0 else "nan")
+        for idx, metric in enumerate(metrics)
+    }
+    with open(osp.join(output_dir, "evaluate.txt"), 'w', encoding="utf-8") as f:
+        print(results, file=f)
 
 
 def main(args):
@@ -369,8 +382,10 @@ def main(args):
         # save model
         save_model_checkpoint(
             model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
-        evaluate(model, data_loader_test,
-                 device=device, iou_types=['bbox'])
+        coco_evaluator = evaluate(model, data_loader_test,
+                                  device=device, iou_types=['bbox'])
+        save_evaluate_smmary(
+            coco_evaluator.coco_eval['bbox'].stats, output_dir)
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))

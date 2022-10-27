@@ -5,12 +5,28 @@ from src.detection.vision.engine import evaluate
 from tools.train_detector import create_dataset, create_data_loader, get_transform
 from src.detection.graph_utils import add_bbox, show_img
 import os.path as osp
-import numpy as np
+import argparse
 
 
-def main():
+def parse_args(add_help=True):
+    parser = argparse.ArgumentParser(
+        description="Detector inference", add_help=add_help)
+
+    # path to model used for inference
+    parser.add_argument("--model-path", type=str,
+                        help="Path with model checkpoint used for inference")
+
+    args = parser.parse_args()
+
+    if args.model_path is None:
+        args.model_path = osp.join(
+            OUTPUT_DIR, "detection_logs", "fasterrcnn_training", "checkpoint.pth")
+    return args
+
+
+def main(args):
     ds_val = create_dataset(
-        "MOT17", get_transform(False, "hflip"), "test")
+        "motsynth_val", get_transform(False, "hflip"), "test")
     data_loader_val = create_data_loader(ds_val, "test", 1, 0)
 
     device = torch.device("cuda")
@@ -18,7 +34,7 @@ def main():
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
     checkpoint = torch.load(
-        osp.join(OUTPUT_DIR, "detection_logs", "fasterrcnn_training", "checkpoint.pth"), map_location="cpu")
+        args.model_path, map_location="cpu")
     model.load_state_dict(checkpoint["model"])
     model.eval()
     model.to(device)
@@ -26,4 +42,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    main(args)

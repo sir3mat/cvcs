@@ -8,7 +8,7 @@ import json
 import tqdm
 import argparse
 
-from tools.anns.generate_mots_format_files import save_seqinfo
+from generate_mots_format_files import save_seqinfo
 
 def parse_args():
     parser = argparse.ArgumentParser()

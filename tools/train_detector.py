@@ -84,7 +84,7 @@ def get_args_parser(add_help=True):
     # Optimizer params
     parser.add_argument(
         "--lr",
-        default=0.0005,
+        default=0.05,
         type=float,
         help="Learning rate (default: 0.0005)",
     )
@@ -106,7 +106,7 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--lr-steps",
-        default=[16, 22],
+        default=[7, 17, 26],
         nargs="+",
         type=int,
         help="Decrease lr every step-size epochs (multisteplr scheduler only)",
@@ -265,7 +265,7 @@ def save_model_summary(model, output_dir, batch_size):
     with open(osp.join(output_dir, "summary.txt"), 'w', encoding="utf-8") as f:
         print(summary(model,
                       # (batch_size, color_channels, height, width)
-                      input_size=(batch_size, 3, 1920, 1080),
+                      input_size=(batch_size, 3, 1080, 1920),
                       verbose=0,
                       col_names=["input_size", "output_size",
                                  "num_params", "kernel_size", "trainable"],

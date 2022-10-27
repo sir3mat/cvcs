@@ -10,7 +10,7 @@ def parse_args():
     parser.add_argument('--motsynth-path', help="Directory path containing the 'annotations' directory with .json files")
     parser.add_argument('--save-path', help='Root file in which the new annoation files will be stored. If not provided, motsynth-root will be used')
     parser.add_argument('--save-dir', default='comb_annotations', help="name of directory within 'save-path'in which MOTS annotation files will be stored")
-    parser.add_argument('--subsample', default=10, type=int, help="Frame subsampling rate. If e.g. 10 is selected, then we will select 1 in 10 frames")
+    parser.add_argument('--subsample', default=20, type=int, help="Frame subsampling rate. If e.g. 10 is selected, then we will select 1 in 20 frames")
     parser.add_argument('--split', default='train', help="Name of split (i.e. set of sequences being merged) being used. A file named '{args.split}.txt needs to exist in the splits dir")
     parser.add_argument('--name', help="Name of the split that file that will be generated. If not provided, the split name will be used")
     

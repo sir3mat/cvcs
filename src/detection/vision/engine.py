@@ -132,10 +132,6 @@ def evaluate(model, data_loader, device, iou_types=None):
 
     # accumulate predictions from all images and print table with results
     coco_evaluator.accumulate()
-    summary = coco_evaluator.summarize()
+    coco_evaluator.summarize()
     torch.set_num_threads(n_threads)
-
-    # stats summary from coco_evaluator.summarize()
-    # print(summary)
-
     return coco_evaluator

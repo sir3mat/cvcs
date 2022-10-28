@@ -8,3 +8,6 @@ src/__pycache__
 src/detection/__pycache__
 tools/__pycache__
 src/detection/vision/__pycache__
+
+custom_out.png
+baseline_out.png

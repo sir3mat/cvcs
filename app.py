@@ -5,7 +5,6 @@ import torch
 import logging
 import torchvision
 from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn_v2
-from torchvision.utils import draw_bounding_boxes
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from configs.path_cfg import MOTCHA_ROOT, OUTPUT_DIR
 from src.detection.graph_utils import add_bbox
@@ -22,9 +21,9 @@ def load_model(baseline: bool = False):
         in_features = model.roi_heads.box_predictor.cls_score.in_features
         model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
         checkpoint = torch.load(osp.join(OUTPUT_DIR, "detection_logs",
-                                "exp_motsynth_30_3layers_sgd_lr_0.05_2", "checkpoint.pth"), map_location="cpu")
+                                "fasterrcnn_training_2", "checkpoint.pth"), map_location="cpu")
         model.load_state_dict(checkpoint["model"])
-    model = model.eval()
+    model.eval()
     return model
 
 
@@ -56,7 +55,7 @@ examples = [[osp.join(MOTCHA_ROOT, "MOT17", "train",
 
 io_baseline = gr.Interface(detect_with_resnet50Model_baseline, gr.Image(type="pil"), gr.Image(
     type="file", shape=(1920, 1080), label="FasterR-CNN_Resnet50_COCO"))
-    
+
 io_custom = gr.Interface(detect_with_resnet50Model_finetuning_motsynth, gr.Image(type="pil"), gr.Image(
     type="file", shape=(1920, 1080), label="FasterR-CNN_Resnet50_FinteTuning_MOTSyth"))
 

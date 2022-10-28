@@ -35,7 +35,7 @@ def get_args_parser(add_help=True):
     # Dataset params
     parser.add_argument("--train-dataset", default="motsynth_train",
                         type=str, help="Dataset name. Please select one of the following: motsynth_train, MOT17 (default: motsynth_train)")
-    parser.add_argument("--val-dataset", default="motsynth_val",
+    parser.add_argument("--val-dataset", default="MOT17",
                         type=str, help="Dataset name. Please select one of the following: motsynth_val, MOT17 (default: motsynth_val)")
 
     # Transforms params
@@ -189,7 +189,7 @@ def create_data_loader(dataset, split: str, batch_size, workers, aspect_ratio_gr
             dataset, batch_sampler=train_batch_sampler, num_workers=workers, collate_fn=utils.collate_fn
         )
     elif split == "test":
-        # sequential sampling on test dataset
+        # random sampling on test dataset
         test_sampler = torch.utils.data.RandomSampler(dataset)
         data_loader = torch.utils.data.DataLoader(
             dataset, batch_size=1, sampler=test_sampler, num_workers=workers, collate_fn=utils.collate_fn
@@ -279,7 +279,6 @@ def save_args(output_dir, args):
 
 
 def save_evaluate_summary(stats, output_dir):
-
     metrics = ["AP", "AP50", "AP75", "APs", "APm", "APl"]
     # the standard metrics
     results = {
@@ -336,12 +335,11 @@ def main(args):
     model = ModelFactory.get_model(
         model_name, weights, backbone, backbone_weights, trainable_backbone_layers)
     save_model_summary(model, output_dir, batch_size)
-    model.to(device)
 
     if args.test_only:
         logger.debug("TEST ONLY")
-        evaluate(model, data_loader_test,
-                 device=device, iou_types=['bbox'])
+        coco_evaluator = evaluate(model, data_loader_test,
+                                  device=device, iou_types=['bbox'])
         save_evaluate_summary(
             coco_evaluator.coco_eval['bbox'].stats, output_dir)
         return

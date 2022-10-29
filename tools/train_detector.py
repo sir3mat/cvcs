@@ -17,6 +17,7 @@ import src.detection.vision.utils as utils
 from src.detection.vision.engine import train_one_epoch, evaluate
 from src.detection.vision.group_by_aspect_ratio import GroupedBatchSampler, create_aspect_ratio_groups
 from src.detection.mot_dataset import get_mot_dataset
+import torchvision
 
 coloredlogs.install(level='DEBUG')
 logger = logging.getLogger(__name__)
@@ -84,9 +85,9 @@ def get_args_parser(add_help=True):
     # Optimizer params
     parser.add_argument(
         "--lr",
-        default=0.05,
+        default=0.0025,
         type=float,
-        help="Learning rate (default: 0.0005)",
+        help="Learning rate (default: 0.0025)",
     )
     parser.add_argument("--momentum", default=0.9,
                         type=float, metavar="M", help="Momentum (default: 0.9")
@@ -106,7 +107,7 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--lr-steps",
-        default=[7, 17, 26],
+        default=[16,22],
         nargs="+",
         type=int,
         help="Decrease lr every step-size epochs (multisteplr scheduler only)",
@@ -137,6 +138,10 @@ def get_args_parser(add_help=True):
 def get_transform(train, data_augmentation):
     if train:
         return presets.DetectionPresetTrain(data_augmentation)
+    elif args.weights and args.test_only:
+        weights = torchvision.models.get_weight(args.weights)
+        trans = weights.transforms()
+        return lambda img, target: (trans(img), target)
     else:
         return presets.DetectionPresetEval()
 

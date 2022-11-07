@@ -19,6 +19,8 @@ from src.detection.vision.group_by_aspect_ratio import GroupedBatchSampler, crea
 from src.detection.mot_dataset import get_mot_dataset
 import torchvision
 
+from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn_v2
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 coloredlogs.install(level='DEBUG')
 logger = logging.getLogger(__name__)
 
@@ -81,6 +83,9 @@ def get_args_parser(add_help=True):
         help="Only test the model",
         action="store_true",
     )
+    parser.add_argument(
+        "--model-eval", type=str, help="model path for test only mode"
+    )
 
     # Optimizer params
     parser.add_argument(
@@ -107,7 +112,7 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--lr-steps",
-        default=[16,22],
+        default=[16, 22],
         nargs="+",
         type=int,
         help="Decrease lr every step-size epochs (multisteplr scheduler only)",
@@ -138,10 +143,6 @@ def get_args_parser(add_help=True):
 def get_transform(train, data_augmentation):
     if train:
         return presets.DetectionPresetTrain(data_augmentation)
-    elif args.weights and args.test_only:
-        weights = torchvision.models.get_weight(args.weights)
-        trans = weights.transforms()
-        return lambda img, target: (trans(img), target)
     else:
         return presets.DetectionPresetEval()
 
@@ -331,6 +332,20 @@ def main(args):
     data_loader_test = create_data_loader(
         dataset_test, "test", batch_size, workers)
 
+    if args.test_only:
+        logger.debug("TEST ONLY")
+        model = fasterrcnn_resnet50_fpn_v2()
+        in_features = model.roi_heads.box_predictor.cls_score.in_features
+        model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
+        checkpoint = torch.load(args.model_eval, map_location="cuda")
+        model.load_state_dict(checkpoint["model"])
+        model.to(device)
+        coco_evaluator = evaluate(model, data_loader_test,
+                                  device=device, iou_types=['bbox'])
+        save_evaluate_summary(
+            coco_evaluator.coco_eval['bbox'].stats, output_dir)
+        return
+
     logger.debug("CREATE MODEL")
     model_name = args.model
     weights = args.weights
@@ -340,14 +355,6 @@ def main(args):
     model = ModelFactory.get_model(
         model_name, weights, backbone, backbone_weights, trainable_backbone_layers)
     save_model_summary(model, output_dir, batch_size)
-
-    if args.test_only:
-        logger.debug("TEST ONLY")
-        coco_evaluator = evaluate(model, data_loader_test,
-                                  device=device, iou_types=['bbox'])
-        save_evaluate_summary(
-            coco_evaluator.coco_eval['bbox'].stats, output_dir)
-        return
 
     logger.debug("CREATE OPTIMIZER")
     lr = args.lr

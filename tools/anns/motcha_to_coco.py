@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument('--save-dir', help='Root file in which the new annoation files will be stored. If not provided, data-root will be used')
     parser.add_argument('--split', default='train', help="Split processed within the dataset. Should be either 'train' or 'test'")
     parser.add_argument('--save-combined', default=True, action='store_true', help="Determines whether a separate .json file containing all sequence annotations will be created")    
-    parser.add_argument('--subsample', default=1, type=int, help="Frame subsampling rate. If e.g. 10 is selected, then we will select 1 in 10 frames")
+    parser.add_argument('--subsample', default=10, type=int, help="Frame subsampling rate. If e.g. 10 is selected, then we will select 1 in 10 frames")
 
     args = parser.parse_args()
 

@@ -32,12 +32,12 @@ class ModelFactory:
             model: FasterRCNN = fasterrcnn_resnet50_fpn_v2(
                 weights=model_weights, backbone_name=backbone, weights_backbone=model_backbone_weights, trainable_backbone_layers=trainable_backbone_layers)
 
-            for param in model.rpn.parameters():
-                param.requires_grad = False
-            for param in model.roi_heads.parameters():
-                param.requires_grad = False
-            for param in model.backbone.fpn.parameters():
-                param.requires_grad = False
+            # for param in model.rpn.parameters():
+            #     param.requires_grad = False
+            # for param in model.roi_heads.parameters():
+            #     param.requires_grad = False
+            # for param in model.backbone.fpn.parameters():
+            #     param.requires_grad = False
 
             set_seeds()
 

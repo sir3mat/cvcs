@@ -36,10 +36,10 @@ def get_args_parser(add_help=True):
                         type=str, help="Path to save outputs (default: fasterrcnn_training)")
 
     # Dataset params
-    parser.add_argument("--train-dataset", default="motsynth_train",
-                        type=str, help="Dataset name. Please select one of the following: motsynth_train, MOT17 (default: motsynth_train)")
+    parser.add_argument("--train-dataset", default="motsynth_split1",
+                        type=str, help="Dataset name. Please select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, motsynth_split4, MOT17 (default: motsynth_split1)")
     parser.add_argument("--val-dataset", default="MOT17",
-                        type=str, help="Dataset name. Please select one of the following: motsynth_val, MOT17 (default: motsynth_val)")
+                        type=str, help="Dataset name. Please select one of the following: MOT17 (default: MOT17)")
 
     # Transforms params
     parser.add_argument(
@@ -166,15 +166,15 @@ def create_dataset(ds_name: str, transforms, split=None):
 
     elif (ds_name.startswith("MOT17")):
         if split == "train":
-            split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN', 'MOT17-05-FRCNN',
-                          'MOT17-10-FRCNN', 'MOT17-11-FRCNN', 'MOT17-13-FRCNN']
+            split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN',
+                          'MOT17-11-FRCNN', 'MOT17-13-FRCNN']
         elif split == "test":
-            split_seqs = ['MOT17-09-FRCNN']
+            split_seqs = ['MOT17-09-FRCNN', 'MOT17-10-FRCNN', 'MOT17-05-FRCNN']
         return get_MOT17_dataset(split, split_seqs, transforms)
 
     else:
         logger.error(
-            "Please, provide a valid dataset as argument. Select one of the following: motsynth_train, motsynth_val, MOT17.")
+            "Please, provide a valid dataset as argument. Select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, motsynth_split4, MOT17.")
         raise ValueError(ds_name)
 
 
@@ -195,8 +195,8 @@ def create_data_loader(dataset, split: str, batch_size, workers, aspect_ratio_gr
             dataset, batch_sampler=train_batch_sampler, num_workers=workers, collate_fn=utils.collate_fn
         )
     elif split == "test":
-        # random sampling on test dataset
-        test_sampler = torch.utils.data.RandomSampler(dataset)
+        # sequential sampling on eval dataset
+        test_sampler = torch.utils.data.SequentialSampler(dataset)
         data_loader = torch.utils.data.DataLoader(
             dataset, batch_size=1, sampler=test_sampler, num_workers=workers, collate_fn=utils.collate_fn
         )
@@ -391,14 +391,13 @@ def main(args):
         save_plots(losses_dict, batch_loss_dict,
                    output_dir=output_plots_dir)
 
-        # save model
-        save_model_checkpoint(
-            model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
         coco_evaluator = evaluate(model, data_loader_test,
                                   device=device, iou_types=['bbox'])
         save_evaluate_summary(
             coco_evaluator.coco_eval['bbox'].stats, output_dir)
 
+    save_model_checkpoint(
+        model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     logger.debug(f"TRAINING TIME: {total_time_str}")

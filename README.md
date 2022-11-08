@@ -1,56 +1,65 @@
 # School in AI Project Work
 
-Questa repository contiene il codice utilizzato per effettuare training e analisi di un pedestrian detector per il corso "School in Ai 2° edizione"@[@UNIMORE](https://www.unimore.it/)
+This repository contains the code to train and evaluate a pedestrian detector for 
+the "School in Ai 2° edition"@[@UNIMORE](https://www.unimore.it/)
 
-## Installazione
+## Installation
 
 N.B.: Installation only avaiable in win64 environments
 
 Create and activate an environment with all required packages:
 
 ```
-conda create --name cvcspw --file deps/wins/conda_environment.txt
+conda create --name ped_detector --file deps/wins/conda_environment.txt
 # or conda env create -f deps/win/conda_environment.yml
-
 conda activate cvcspw
-
-# in case of error with cuda
-# conda install pytorch torchvision torchaudio cudatoolkit=11.6 -c pytorch -c conda-forge
 pip install -r deps/win/pip_requirements.txt
 ```
 
-## Dataset Download and Preparation:
-
-Download the storage folder content from [here](https://drive.google.com/drive/folders/1rQY3S5DZ2Au5VEPeIFYB2pgph97C_8tl?usp=sharing)
-
+## Dataset download and preparation:
+### Solution 1 - From Google Drice
+Download the storage folder directly from Google Drive [here](link google drive)
+and place it in the root dir of the project
 After runnning this step, your storage directory should look like this:
-
 ```text
 storage
     ├── MOTChallenge
-        ├── data
         ├── MOT17
         ├── motcha_coco_annotations
-        ├── motcha_reid_images
     ├── MOTSynth
         ├── annotations
         ├── comb_annotations
         ├── frames
-        ├── mot_annotations
-        ├── mots_annotations
-        ├── reid
     ├── motsynth_output
-        ├── models
-
 ```
-
-### Dataset annotation format
-
-MOT annotations in `/storage/mot_annotations/frame/gt/gt.txt` follow this format:
-
-```text
-<frame>, <id>, <bb_left>, <bb_top>, <bb_width>, <bb_height>, <conf>, <class>, <vis>, <x>, <y>, <z>
+### Solution 2 - From scratch
+#### Prepare MOTSynth dataset
+1. Download MOTSynth_1.
 ```
+wget -P ./storage/MOTSynth https://motchallenge.net/data/MOTSynth_1.zip
+unzip ./storage/MOTSynth/MOTSynth_1.zip
+rm ./storage/MOTSynth/MOTSynth_1.zip
+```
+2. Delete video from 123 to 256
+2. Extract frames from the videos
+```
+python tools/anns/to_frames.py --motsynth-root ./storage/MOTSynth
+
+# now you can delete other videos
+rm -r ./storage/MOTSynth/MOTSynth_1
+```
+3. Download and extract annotations
+```
+wget -P ./storage/MOTSynth https://motchallenge.net/data/MOTSynth_coco_annotations.zip
+unzip ./storage/MOTSynth/MOTSynth_coco_annotations.zip
+rm ./storage/MOTSynth/MOTSynth_coco_annotations.zip
+```
+4. Prepare combined annotations for MOTSynth from the original coco annotations
+```
+python tools/anns/combine_anns.py --motsynth-path ./storage/MOTSynth
+```
+#### Prepare MOT17 dataset
+
 
 ## Colab Usage
 
@@ -59,9 +68,8 @@ In the notebook folder you can find some useful .ipynb files and remember to loa
 
 ## Object Detection
 
-We adapt torchvision's detection reference code to train Faster R-CNN on a portion of the MOTSynth dataset. To train Faster R-CNN with a ResNet50 with FPN backbone, you can run the following:
-
+An adaption of torchvision's detection reference code is done to train Faster R-CNN on a portion of the MOTSynth dataset. To train the model you can run:
 ```
-python -m  tools.train_detector --epochs 10
+./scripts/train_detector
 ```
 

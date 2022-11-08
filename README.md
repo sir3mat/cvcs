@@ -1,8 +1,8 @@
-# CVCS Project Work Group #13
+# School in AI Project Work
 
-This repository provide the implementation of our paper "NAME OF PAPER" delivered for the "Computer Vision and Cognitive System" course [@UNIMORE](https://www.unimore.it/)
+Questa repository contiene il codice utilizzato per effettuare training e analisi di un pedestrian detector per il corso "School in Ai 2° edizione"@[@UNIMORE](https://www.unimore.it/)
 
-## Installation
+## Installazione
 
 N.B.: Installation only avaiable in win64 environments
 
@@ -65,12 +65,3 @@ We adapt torchvision's detection reference code to train Faster R-CNN on a porti
 python -m  tools.train_detector --epochs 10
 ```
 
-## Multi-Object Tracking
-
-## Distance estimation
-
-## Person Re-Identification
-
-## Acknowledgements
-
-This pipeline is built on top of [motsynth-baselines](https://github.com/dvl-tum/motsynth-baselines) repository.

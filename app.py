@@ -57,7 +57,7 @@ io_baseline = gr.Interface(detect_with_resnet50Model_baseline, gr.Image(type="pi
     type="file", shape=(1920, 1080), label="FasterR-CNN_Resnet50_COCO"))
 
 io_custom = gr.Interface(detect_with_resnet50Model_finetuning_motsynth, gr.Image(type="pil"), gr.Image(
-    type="file", shape=(1920, 1080), label="FasterR-CNN_Resnet50_FinteTuning_MOTSyth"))
+    type="file", shape=(1920, 1080), label="FasterR-CNN_Resnet50_FinteTuning_MOTSynth"))
 
 gr.Parallel(io_baseline, io_custom, title=title,
             description=description, examples=examples).launch(enable_queue=True)

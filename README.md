@@ -1,14 +1,16 @@
 # School in AI Project Work
 
 This repository contains the code to train and evaluate a pedestrian detector for
-the "School in Ai 2° edition" @[@UNIMORE](https://www.unimore.it/)
+the "School in Ai 2° edition"[@UNIMORE](https://aischools.it/)
+![alt text](http://www.aiacademy.unimore.it/media/news/ai-logo-white_2ND_EDITION.png)
 
 ## Demo Links
-| Google Colab Demo | Huggingface Demo | Report |
-|:-:|:-:|:-:|
-|[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](linkColabInference usp=sharing)|[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/sir3mat/SchoolInAiProjectWork)|[Report](link al drive con il report)|
-* Integrated to [Huggingface Spaces](https://huggingface.co/spaces) with [Gradio](https://github.com/gradio-app/gradio).
 
+|                                                  Google Colab Demo                                                   |                                                                       Huggingface Demo                                                                        |                 Report                  |
+| :------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------: |
+| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://ilinkColabInferenceusp=sharing) | [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/sir3mat/SchoolInAiProjectWork) | [Report](https://ilinkadriveconlreport) |
+
+- Integrated to [Huggingface Spaces](https://huggingface.co/spaces) with [Gradio](https://github.com/gradio-app/gradio).
 
 ## Installation
 

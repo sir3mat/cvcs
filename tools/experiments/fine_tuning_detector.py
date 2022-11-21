@@ -4,13 +4,12 @@ import os.path as osp
 import time
 import coloredlogs
 import logging
-from torchinfo import summary
 import torch
 import torch.utils.data
 import src.detection.vision.utils as utils
 from src.detection.vision.engine import train_one_epoch, evaluate
 from tools.experiments.dataset_utils import create_dataset, get_transform, create_data_loader
-from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn_v2, FastRCNNPredictor
+from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn, FastRCNNPredictor
 from tools.experiments.training_utils import create_lr_scheduler, create_optimizer, save_args, save_evaluate_summary, save_model_checkpoint, save_model_summary, save_plots
 
 coloredlogs.install(level='DEBUG')
@@ -28,7 +27,7 @@ def get_args_parser(add_help=True):
                         type=str, help="Path to save outputs (default: fasterrcnn_training)")
 
     # Dataset params
-    parser.add_argument("--train-dataset", default="motsynth_split3",
+    parser.add_argument("--train-dataset", default="MOT17",
                         type=str, help="Dataset name. Please select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, motsynth_split4, MOT17 (default: motsynth_split1)")
     parser.add_argument("--val-dataset", default="MOT17",
                         type=str, help="Dataset name. Please select one of the following: MOT17 (default: MOT17)")
@@ -40,13 +39,13 @@ def get_args_parser(add_help=True):
 
     # Data Loaders params
     parser.add_argument(
-        "-b", "--batch-size", default=3, type=int, help="Images per gpu (default: 3)"
+        "-b", "--batch-size", default=5, type=int, help="Images per gpu (default: 5)"
     )
     parser.add_argument(
-        "-j", "--workers", default=0, type=int, metavar="N", help="Number of data loading workers (default: 0)"
+        "-j", "--workers", default=0, type=int, metavar="N", help="Number of data loading workers"
     )
-    parser.add_argument("--aspect-ratio-group-factor", default=3,
-                        type=int, help="Aspect ration group factor (default:3)")
+    parser.add_argument("--aspect-ratio-group-factor", default=-1,
+                        type=int, help="Aspect ration group factor (default:disabled)")
 
     # Model param
     parser.add_argument(
@@ -81,7 +80,7 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--lr-steps",
-        default=[16, 22],
+        default=[4, 9, 15],
         nargs="+",
         type=int,
         help="Decrease lr every step-size epochs (multisteplr scheduler only)",
@@ -97,7 +96,7 @@ def get_args_parser(add_help=True):
     # training param
     parser.add_argument("--start_epoch", default=0,
                         type=int, help="start epoch")
-    parser.add_argument("--epochs", default=30, type=int,
+    parser.add_argument("--epochs", default=10, type=int,
                         metavar="N", help="number of total epochs to run")
     parser.add_argument("--print-freq", default=20,
                         type=int, help="print frequency")
@@ -144,19 +143,18 @@ def main(args):
     logger.debug("CREATE MODEL")
     model_path = args.model_path
     if model_path == "baseline":
-        model = fasterrcnn_resnet50_fpn_v2(weights="DEFAULT")
+        model = fasterrcnn_resnet50_fpn(weights="DEFAULT")
         in_features = model.roi_heads.box_predictor.cls_score.in_features
         model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
     else:
-        model = fasterrcnn_resnet50_fpn_v2()
+        model = fasterrcnn_resnet50_fpn()
         in_features = model.roi_heads.box_predictor.cls_score.in_features
         model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
         checkpoint = torch.load(
             args.model_path, map_location="cpu")
         model.load_state_dict(checkpoint["model"])
-
-    model.to(device)
     save_model_summary(model, output_dir, batch_size)
+    model.to(device)
 
     logger.debug("CREATE OPTIMIZER")
     lr = args.lr
@@ -187,7 +185,9 @@ def main(args):
         lr_scheduler.step()
         save_plots(losses_dict, batch_loss_dict,
                    output_dir=output_plots_dir)
-
+        if (epoch % 5 == 0):
+            save_model_checkpoint(
+                model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
         coco_evaluator = evaluate(model, data_loader_test,
                                   device=device, iou_types=['bbox'])
         save_evaluate_summary(

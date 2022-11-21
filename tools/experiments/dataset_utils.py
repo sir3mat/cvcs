@@ -42,12 +42,12 @@ def create_dataset(ds_name: str, transforms, split=None):
             split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN',
                           'MOT17-11-FRCNN', 'MOT17-13-FRCNN']
         elif split == "test":
-            split_seqs = ['MOT17-09-FRCNN', 'MOT17-10-FRCNN', 'MOT17-05-FRCNN']
+            split_seqs = ['MOT17-09-FRCNN', 'MOT17-10-FRCNN']
         return get_MOT17_dataset(split, split_seqs, transforms)
 
     else:
         logger.error(
-            "Please, provide a valid dataset as argument. Select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, motsynth_split4, MOT17.")
+            "Please, provide a valid dataset as argument. Select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, MOT17.")
         raise ValueError(ds_name)
 
 

@@ -6,7 +6,7 @@ import torch
 import torch.utils.data
 import src.detection.vision.utils as utils
 from src.detection.vision.engine import  evaluate
-from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn_v2
+from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from tools.experiments.dataset_utils import create_dataset, get_transform, create_data_loader
 coloredlogs.install(level='DEBUG')
@@ -30,10 +30,10 @@ def get_args_parser(add_help=True):
 
     # Data Loaders params
     parser.add_argument(
-        "-b", "--batch-size", default=3, type=int, help="Images per gpu (default: 3)"
+        "-b", "--batch-size", default=5, type=int, help="Images per gpu (default: 5)"
     )
     parser.add_argument(
-        "-j", "--workers", default=0, type=int, metavar="N", help="Number of data loading workers (default: 0)"
+        "-j", "--workers", default=0, type=int, metavar="N", help="Number of data loading workers"
     )
     # Device param
     parser.add_argument("--device", default="cuda", type=str,
@@ -43,8 +43,6 @@ def get_args_parser(add_help=True):
     parser.add_argument(
         "--model-eval", type=str, help="model path"
     )
-
-
     return parser
 
 def save_args(output_dir, args):
@@ -91,7 +89,7 @@ def main(args):
     dataset_test, "test", batch_size, workers)
 
     logger.debug("TEST ONLY")
-    model = fasterrcnn_resnet50_fpn_v2()
+    model = fasterrcnn_resnet50_fpn()
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
     checkpoint = torch.load(args.model_eval, map_location="cuda")

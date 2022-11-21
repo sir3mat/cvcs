@@ -1,5 +1,5 @@
 import torch
-from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn_v2, FastRCNNPredictor
+from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn, FastRCNNPredictor
 from configs.path_cfg import OUTPUT_DIR
 from src.detection.graph_utils import add_bbox, plot_img_tensor
 import os.path as osp
@@ -32,14 +32,14 @@ def parse_args(add_help=True):
 
 def main(args):
     device = torch.device("cuda")
-    model = fasterrcnn_resnet50_fpn_v2()
+    model = fasterrcnn_resnet50_fpn()
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
     checkpoint = torch.load(
         args.model_path, map_location="cpu")
     model.load_state_dict(checkpoint["model"])
-    model.eval()
     model.to(device)
+    model.eval()
 
     image = Image.open(args.input).convert('RGB')
     transform = transforms.Compose([

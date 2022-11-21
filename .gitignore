@@ -11,3 +11,4 @@ src/detection/vision/__pycache__
 
 custom_out.png
 baseline_out.png
+old_notebook/**

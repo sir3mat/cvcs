@@ -16,7 +16,7 @@ def set_seeds(seed: int = 42):
 class ModelFactory:
     @staticmethod
     def get_model(name, weights, backbone, backbone_weights, trainable_backbone_layers):
-        logger.debug(f"get_model -> model:{name}")
+        logger.debug(f"get_model: model:{name}")
 
         if name == "fasterrcnn_resnet50_fpn":
             if weights == "None":
@@ -24,6 +24,8 @@ class ModelFactory:
             else:
                 model_weights = FasterRCNN_ResNet50_FPN_Weights[weights]
             model_backbone_weights = ResNet50_Weights[backbone_weights]
+            logger.debug(
+                f"Loaded model:{name}, backbone_weights:{model_backbone_weights}, model_weights:{model_weights}")
             model: FasterRCNN = fasterrcnn_resnet50_fpn(
                 weights=model_weights, backbone_name=backbone, weights_backbone=model_backbone_weights, trainable_backbone_layers=trainable_backbone_layers)
 

@@ -40,19 +40,19 @@ def get_args_parser(add_help=True):
 
     # Data Loaders params
     parser.add_argument(
-        "-b", "--batch-size", default=3, type=int, help="Images per gpu (default: 3)"
+        "-b", "--batch-size", default=5, type=int, help="Images per gpu (default: 5)"
     )
     parser.add_argument(
-        "-j", "--workers", default=0, type=int, metavar="N", help="Number of data loading workers (default: 0)"
+        "-j", "--workers", default=0, type=int, metavar="N", help="Number of data loading workers"
     )
-    parser.add_argument("--aspect-ratio-group-factor", default=3,
-                        type=int, help="Aspect ration group factor (default:3)")
+    parser.add_argument("--aspect-ratio-group-factor", default=-1,
+                        type=int, help="Aspect ration group factor (default:disabled)")
 
     # Model param
     parser.add_argument(
         "--model", default="fasterrcnn_resnet50_fpn", type=str, help="Model name (default: fasterrcnn_resnet50_fpn)")
     parser.add_argument(
-        "--weights", default="DEFAULT", type=str, help="Model weights (default: DEFAULT)"
+        "--weights", default="None", type=str, help="Model weights (default: None)"
     )
     parser.add_argument(
         "--backbone", default='resnet50', type=str, help="Type of backbone (default: resnet50)"
@@ -71,9 +71,9 @@ def get_args_parser(add_help=True):
     # Optimizer params
     parser.add_argument(
         "--lr",
-        default=0.0025,
+        default=0.025,
         type=float,
-        help="Learning rate (default: 0.0025)",
+        help="Learning rate (default: 0.025)",
     )
     parser.add_argument("--momentum", default=0.9,
                         type=float, metavar="M", help="Momentum (default: 0.9")
@@ -93,7 +93,7 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--lr-steps",
-        default=[16, 22],
+        default=[8, 16, 22],
         nargs="+",
         type=int,
         help="Decrease lr every step-size epochs (multisteplr scheduler only)",
@@ -109,7 +109,7 @@ def get_args_parser(add_help=True):
     # training param
     parser.add_argument("--start_epoch", default=0,
                         type=int, help="start epoch")
-    parser.add_argument("--epochs", default=30, type=int,
+    parser.add_argument("--epochs", default=10, type=int,
                         metavar="N", help="number of total epochs to run")
     parser.add_argument("--print-freq", default=20,
                         type=int, help="print frequency")
@@ -162,6 +162,7 @@ def main(args):
     model = ModelFactory.get_model(
         model_name, weights, backbone, backbone_weights, trainable_backbone_layers)
     save_model_summary(model, output_dir, batch_size)
+    model.to(device)
 
     logger.debug("CREATE OPTIMIZER")
     lr = args.lr
@@ -192,7 +193,9 @@ def main(args):
         lr_scheduler.step()
         save_plots(losses_dict, batch_loss_dict,
                    output_dir=output_plots_dir)
-
+        if (epoch % 5 == 0):
+            save_model_checkpoint(
+                model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
         coco_evaluator = evaluate(model, data_loader_test,
                                   device=device, iou_types=['bbox'])
         save_evaluate_summary(

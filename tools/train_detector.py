@@ -1,5 +1,5 @@
 from typing import List
-from configs.path_cfg import MOTSYNTH_ROOT, MOTCHA_ROOT, OUTPUT_DIR
+from configs.path_cfg import MOTSYNTH_ROOT, MOTCHA_ROOT, OUTPUT_DIR, PENNFUDAN_ROOT
 import datetime
 import os.path as osp
 import os
@@ -19,7 +19,7 @@ from src.detection.vision.group_by_aspect_ratio import GroupedBatchSampler, crea
 from src.detection.mot_dataset import get_mot_dataset
 import torchvision
 
-from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn_v2
+from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn_v2, fasterrcnn_resnet50_fpn
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 coloredlogs.install(level='DEBUG')
 logger = logging.getLogger(__name__)
@@ -36,8 +36,8 @@ def get_args_parser(add_help=True):
                         type=str, help="Path to save outputs (default: fasterrcnn_training)")
 
     # Dataset params
-    parser.add_argument("--train-dataset", default="motsynth_split3",
-                        type=str, help="Dataset name. Please select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, motsynth_split4, MOT17 (default: motsynth_split1)")
+    parser.add_argument("--train-dataset", default="MOT17",
+                        type=str, help="Dataset name. Please select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, MOT17 (default: motsynth_split1)")
     parser.add_argument("--val-dataset", default="MOT17",
                         type=str, help="Dataset name. Please select one of the following: MOT17 (default: MOT17)")
 
@@ -48,19 +48,19 @@ def get_args_parser(add_help=True):
 
     # Data Loaders params
     parser.add_argument(
-        "-b", "--batch-size", default=3, type=int, help="Images per gpu (default: 3)"
+        "-b", "--batch-size", default=5, type=int, help="Images per gpu (default: 5)"
     )
     parser.add_argument(
-        "-j", "--workers", default=0, type=int, metavar="N", help="Number of data loading workers (default: 0)"
+        "-j", "--workers", default=0, type=int, metavar="N", help="Number of data loading workers"
     )
-    parser.add_argument("--aspect-ratio-group-factor", default=3,
-                        type=int, help="Aspect ration group factor (default:3)")
+    parser.add_argument("--aspect-ratio-group-factor", default=-1,
+                        type=int, help="Aspect ration group factor (default:disabled)")
 
     # Model param
     parser.add_argument(
         "--model", default="fasterrcnn_resnet50_fpn", type=str, help="Model name (default: fasterrcnn_resnet50_fpn)")
     parser.add_argument(
-        "--weights", default="DEFAULT", type=str, help="Model weights (default: DEFAULT)"
+        "--weights", default="None", type=str, help="Model weights (default: None)"
     )
     parser.add_argument(
         "--backbone", default='resnet50', type=str, help="Type of backbone (default: resnet50)"
@@ -90,9 +90,10 @@ def get_args_parser(add_help=True):
     # Optimizer params
     parser.add_argument(
         "--lr",
-        default=0.0025,
+        default=0.0025,  # finetuning mot17
+        # default=0.025,
         type=float,
-        help="Learning rate (default: 0.0025)",
+        help="Learning rate (default: 0.025)",
     )
     parser.add_argument("--momentum", default=0.9,
                         type=float, metavar="M", help="Momentum (default: 0.9")
@@ -112,7 +113,8 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--lr-steps",
-        default=[16, 22],
+        #default=[8, 16, 22],
+        default=[4, 9, 15],  # finetuning mot17
         nargs="+",
         type=int,
         help="Decrease lr every step-size epochs (multisteplr scheduler only)",
@@ -132,7 +134,7 @@ def get_args_parser(add_help=True):
     # training param
     parser.add_argument("--start_epoch", default=0,
                         type=int, help="start epoch")
-    parser.add_argument("--epochs", default=30, type=int,
+    parser.add_argument("--epochs", default=10, type=int,
                         metavar="N", help="number of total epochs to run")
     parser.add_argument("--print-freq", default=20,
                         type=int, help="print frequency")
@@ -140,7 +142,7 @@ def get_args_parser(add_help=True):
     return parser
 
 
-def get_transform(train, data_augmentation):
+def get_transform(train, data_augmentation=None):
     if train:
         return presets.DetectionPresetTrain(data_augmentation)
     else:
@@ -167,9 +169,9 @@ def create_dataset(ds_name: str, transforms, split=None):
     elif (ds_name.startswith("MOT17")):
         if split == "train":
             split_seqs = ['MOT17-02-FRCNN', 'MOT17-04-FRCNN',
-                          'MOT17-11-FRCNN', 'MOT17-13-FRCNN']
+                          'MOT17-11-FRCNN', 'MOT17-13-FRCNN', 'MOT17-05-FRCNN']
         elif split == "test":
-            split_seqs = ['MOT17-09-FRCNN', 'MOT17-10-FRCNN', 'MOT17-05-FRCNN']
+            split_seqs = ['MOT17-09-FRCNN', 'MOT17-10-FRCNN']
         return get_MOT17_dataset(split, split_seqs, transforms)
 
     else:
@@ -352,9 +354,18 @@ def main(args):
     backbone = args.backbone
     backbone_weights = args.backbone_weights
     trainable_backbone_layers = args.trainable_backbone_layers
-    model = ModelFactory.get_model(
-        model_name, weights, backbone, backbone_weights, trainable_backbone_layers)
+    # finetuning
+    model = fasterrcnn_resnet50_fpn(
+        weights=None, backbone_weights="DEFAULT")
+    in_features = model.roi_heads.box_predictor.cls_score.in_features
+    model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
+    checkpoint = torch.load(args.model_eval, map_location="cpu")
+    model.load_state_dict(checkpoint["model"])
+    # training
+    # model = ModelFactory.get_model(
+    #     model_name, weights, backbone, backbone_weights, trainable_backbone_layers)
     save_model_summary(model, output_dir, batch_size)
+    model.to(device)
 
     logger.debug("CREATE OPTIMIZER")
     lr = args.lr
@@ -390,6 +401,10 @@ def main(args):
         lr_scheduler.step()
         save_plots(losses_dict, batch_loss_dict,
                    output_dir=output_plots_dir)
+
+        if (epoch % 5 == 0):
+            save_model_checkpoint(
+                model, optimizer, lr_scheduler, epoch, scaler, output_dir, args)
 
         coco_evaluator = evaluate(model, data_loader_test,
                                   device=device, iou_types=['bbox'])

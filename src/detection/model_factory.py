@@ -1,18 +1,12 @@
 import logging
-import torch
-from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn_v2, FasterRCNN, FastRCNNPredictor
-from torchvision.models.detection import FasterRCNN_ResNet50_FPN_V2_Weights
+from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn, FasterRCNN, FastRCNNPredictor
+from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
 from torchvision.models.resnet import ResNet50_Weights
-
+import torch
 logger = logging.getLogger(__name__)
 
 
 def set_seeds(seed: int = 42):
-    """Sets random sets for torch operations.
-
-    Args:
-        seed (int, optional): Random seed to set. Defaults to 42.
-    """
     # Set the seed for general torch operations
     torch.manual_seed(seed)
     # Set the seed for CUDA torch operations (ones that happen on the GPU)
@@ -25,19 +19,13 @@ class ModelFactory:
         logger.debug(f"get_model -> model:{name}")
 
         if name == "fasterrcnn_resnet50_fpn":
-            # backbone = backbone
-            model_weights = FasterRCNN_ResNet50_FPN_V2_Weights[weights]
+            if weights == "None":
+                model_weights = None
+            else:
+                model_weights = FasterRCNN_ResNet50_FPN_Weights[weights]
             model_backbone_weights = ResNet50_Weights[backbone_weights]
-            # trainable_backbone_layers = 1
-            model: FasterRCNN = fasterrcnn_resnet50_fpn_v2(
+            model: FasterRCNN = fasterrcnn_resnet50_fpn(
                 weights=model_weights, backbone_name=backbone, weights_backbone=model_backbone_weights, trainable_backbone_layers=trainable_backbone_layers)
-
-            # for param in model.rpn.parameters():
-            #     param.requires_grad = False
-            # for param in model.roi_heads.parameters():
-            #     param.requires_grad = False
-            # for param in model.backbone.fpn.parameters():
-            #     param.requires_grad = False
 
             set_seeds()
 

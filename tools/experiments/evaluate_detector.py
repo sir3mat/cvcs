@@ -92,7 +92,7 @@ def main(args):
     model = fasterrcnn_resnet50_fpn()
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
-    checkpoint = torch.load(args.model_eval, map_location="cuda")
+    checkpoint = torch.load(args.model_eval, map_location="cpu")
     model.load_state_dict(checkpoint["model"])
     model.to(device)
     coco_evaluator = evaluate(model, data_loader_test,

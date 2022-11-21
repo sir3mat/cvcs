@@ -14,8 +14,7 @@ def parse_args(add_help=True):
 
     # path to model used for inference
     parser.add_argument("--model-path", type=str,
-                        help="Path to model checkpoint", default=osp.join(
-                            OUTPUT_DIR, "detection_logs", "fasterrcnn_training", "checkpoint.pth"))
+                        help="Path to model checkpoint")
 
     # path of image used for evaluation
     parser.add_argument("--input", type=str,

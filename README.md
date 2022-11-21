@@ -8,7 +8,7 @@ the "School in Ai 2° edition"[@UNIMORE](https://aischools.it/)
 
 |                                                  Google Colab Demo                                                   |                                                                       Huggingface Demo                                                                        |                 Report                  |
 | :------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------: |
-| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://ilinkColabInferenceusp=sharing) | [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/sir3mat/SchoolInAiProjectWork) | [Report](https://ilinkadriveconlreport) |
+| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1KQqmPANWiLqAJH0yZN1UV_FVqnzPrurw/view?usp=sharing) | [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/sir3mat/SchoolInAiProjectWork) | [Report](https://docs.google.com/document/d/1U0yEuGx5wJ8xkZUpdMQS59XM9V7IidX-vzX9bOh6iEM/edit?usp=share_link) |
 
 - Integrated to [Huggingface Spaces](https://huggingface.co/spaces) with [Gradio](https://github.com/gradio-app/gradio).
 
@@ -19,35 +19,14 @@ N.B.: Installation only avaiable in win64 environments
 Create and activate an environment with all required packages:
 
 ```
-conda create --name ped_detector --file deps/wins/conda_environment.txt
-# or conda env create -f deps/win/conda_environment.yml
-conda activate cvcspw
+conda create --name pedestrian_detector --file deps/wins/conda_requirements.txt
+conda activate pedestrian_detector
 pip install -r deps/win/pip_requirements.txt
 ```
 
 ## Dataset download and preparation:
 
-### Solution 1 - From Google Drive
-
-Download the storage folder directly from Google Drive [here](link google drive)
-and place it in the root dir of the project
-After runnning this step, your storage directory should look like this:
-
-```text
-storage
-    ├── MOTChallenge
-        ├── MOT17
-        ├── motcha_coco_annotations
-    ├── MOTSynth
-        ├── annotations
-        ├── comb_annotations
-        ├── frames
-    ├── motsynth_output
-```
-
-### Solution 2 - From scratch
-
-#### Prepare MOTSynth dataset
+### Prepare MOTSynth dataset
 
 1. Download MOTSynth_1.
 
@@ -81,7 +60,13 @@ rm ./storage/MOTSynth/MOTSynth_coco_annotations.zip
 python tools/anns/combine_anns.py --motsynth-path ./storage/MOTSynth
 ```
 
-#### Prepare MOT17 dataset
+6. Prepare motsynth ouput dir for training results
+
+```
+mkdir ./storage/motsynth_output
+```
+
+### Prepare MOT17 dataset
 
 1. Download MOT17
 
@@ -97,10 +82,32 @@ rm ./storage/MOTChallenge/MOTSynth_1.zip
 python tools/anns/motcha_to_coco.py --data-root ./storage/MOTChallenge
 ```
 
+### Download pretrained models folders from GDrive
+
+You can find all pretrained models here https://drive.google.com/drive/folders/15Lv40x3MquSnKbI4U5aGSZtqQuEmiwMH?usp=share_link
+Download them and paste the .pth files in storage/pretrained_models directory
+
+### Storage directory tree
+
+After runnning this step, your storage directory should look like this:
+
+```text
+storage
+    ├── MOTChallenge
+        ├── MOT17
+        ├── motcha_coco_annotations
+    ├── MOTSynth
+        ├── annotations
+        ├── comb_annotations
+        ├── frames
+    ├── motsynth_output
+    ├── pretrained_models
+```
+
 ## Colab Usage
 
 You can also use [Google Colab](https://colab.research.google.com) if you need remote resources like GPUs.
-In the notebook folder you can find some useful .ipynb files and remember to load the storage folder in your GDrive before usage.
+In the notebook folder you can find some useful .ipynb files and remember to load all the storage folder in your GDrive before usage (N.B. you need at least 150/200GB).
 
 ## Object Detection
 
@@ -109,17 +116,23 @@ An adaption of torchvision's detection reference code is done to train Faster R-
 - To train the model you can run (change params in the script):
 
 ```
-./scripts/train_detector
+./scripts/train_detector.sh
+```
+
+- To fine-tuning the model you can run (change params in the script):
+
+```
+./scripts/fine_tuning_detector.sh
 ```
 
 - To evaluate the model you can run (change params in the script):
 
 ```
-./scripts/evaluate_detector
+./scripts/evaluate_detector.sh
 ```
 
 - To make inference and show results you can run (change params in the script):
 
 ```
-./scripts/inference_detector
+./scripts/inference_detector.sh
 ```

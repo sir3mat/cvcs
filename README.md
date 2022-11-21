@@ -6,9 +6,9 @@ the "School in Ai 2° edition"[@UNIMORE](https://aischools.it/)
 
 ## Demo Links
 
-|                                                  Google Colab Demo                                                   |                                                                       Huggingface Demo                                                                        |                 Report                  |
-| :------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------: |
-| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://drive.google.com/file/d/1KQqmPANWiLqAJH0yZN1UV_FVqnzPrurw/view?usp=sharing) | [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/sir3mat/SchoolInAiProjectWork) | [Report](https://docs.google.com/document/d/1U0yEuGx5wJ8xkZUpdMQS59XM9V7IidX-vzX9bOh6iEM/edit?usp=share_link) |
+|                                                                    Google Colab Demo                                                                    |                                                                       Huggingface Demo                                                                        |                                                    Report                                                     |
+| :-----------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: |
+| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1KQqmPANWiLqAJH0yZN1UV_FVqnzPrurw) | [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/sir3mat/SchoolInAiProjectWork) | [Report](https://docs.google.com/document/d/1U0yEuGx5wJ8xkZUpdMQS59XM9V7IidX-vzX9bOh6iEM/edit?usp=share_link) |
 
 - Integrated to [Huggingface Spaces](https://huggingface.co/spaces) with [Gradio](https://github.com/gradio-app/gradio).
 

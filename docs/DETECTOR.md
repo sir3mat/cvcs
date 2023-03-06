@@ -1,6 +1,6 @@
 # Pedestrian detection
 
-Pedestrian detection module is based on the "Domain adaption on pedestrian detection with Faster R-CNN" paper written by Matteo Sirri for the "School in AI: Deep Learning, Vision and Language for Industry - second edition" final project work [https://www.unimore.it/]@UNIMORE
+Pedestrian detection module is based on the "Domain adaption on pedestrian detection with Faster R-CNN" paper written by Matteo Sirri for the "School in AI: Deep Learning, Vision and Language for Industry - second edition" final project work [@UNIMORE](https://www.unimore.it)
 
 ## Demo Links
 

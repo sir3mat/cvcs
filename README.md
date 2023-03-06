@@ -95,8 +95,8 @@ storage
 
 ## Modules
 
-1.  Detection
-        See [docs/DETECTOR.md](docs/DETECTOR.md)
+1.  Detection\
+     See [docs/DETECTOR.md](docs/DETECTOR.md)
 2.  Re-ID
 3.  Retrieval
 4.  Crowd analysis

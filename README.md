@@ -1,6 +1,6 @@
 # Vision-Based pedestrian analysis system
 
-This repository provide the implementation of our paper "NAME OF PAPER" delivered for the "Computer Vision and Cognitive System" course [https://www.unimore.it/]@UNIMORE
+This repository provide the implementation of our paper "NAME OF PAPER" delivered for the "Computer Vision and Cognitive System" course @[UNIMORE](https://www.unimore.it/)
 
 ## Installation
 

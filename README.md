@@ -1,16 +1,6 @@
-# School in AI Project Work
+# Vision-Based pedestrian analysis system
 
-This repository contains the code to train and evaluate a pedestrian detector for
-the "School in Ai 2° edition"[@UNIMORE](https://aischools.it/)
-![alt text](http://www.aiacademy.unimore.it/media/news/ai-logo-white_2ND_EDITION.png)
-
-## Demo Links
-
-|                                                                    Google Colab Demo                                                                    |                                                                       Huggingface Demo                                                                        |                                                    Report                                                     |
-| :-----------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: |
-| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1KQqmPANWiLqAJH0yZN1UV_FVqnzPrurw) | [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/sir3mat/SchoolInAiProjectWork) | [Report](https://docs.google.com/document/d/1U0yEuGx5wJ8xkZUpdMQS59XM9V7IidX-vzX9bOh6iEM/edit?usp=share_link) |
-
-- Integrated to [Huggingface Spaces](https://huggingface.co/spaces) with [Gradio](https://github.com/gradio-app/gradio).
+This repository provide the implementation of our paper "NAME OF PAPER" delivered for the "Computer Vision and Cognitive System" course [https://www.unimore.it/]@UNIMORE
 
 ## Installation
 
@@ -103,35 +93,15 @@ storage
     ├── pretrained_models
 ```
 
+## Modules
+
+1. Detection
+   See [docs/DETECTOR.md](docs/DETECTOR.md)
+2. Re-ID
+3. Retrieval
+4. Crowd analysis
+
 ## Colab Usage
 
 You can also use [Google Colab](https://colab.research.google.com) if you need remote resources like GPUs.
 In the notebook folder you can find some useful .ipynb files and remember to load all the storage folder in your GDrive before usage (N.B. you need at least 150/200GB).
-
-## Object Detection
-
-An adaption of torchvision's detection reference code is done to train Faster R-CNN on a portion of the MOTSynth dataset.
-
-- To train the model you can run (change params in the script):
-
-```
-./scripts/train_detector.sh
-```
-
-- To fine-tuning the model you can run (change params in the script):
-
-```
-./scripts/fine_tuning_detector.sh
-```
-
-- To evaluate the model you can run (change params in the script):
-
-```
-./scripts/evaluate_detector.sh
-```
-
-- To make inference and show results you can run (change params in the script):
-
-```
-./scripts/inference_detector.sh
-```

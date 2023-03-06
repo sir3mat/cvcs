@@ -4,11 +4,11 @@ import coloredlogs
 import logging
 import torch
 import torch.utils.data
-import src.detection.vision.utils as utils
-from src.detection.vision.engine import  evaluate
+import core.detection.vision.utils as utils
+from core.detection.vision.engine import  evaluate
 from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-from tools.experiments.dataset_utils import create_dataset, get_transform, create_data_loader
+from experiments.detection.dataset_utils import create_dataset, get_transform, create_data_loader
 coloredlogs.install(level='DEBUG')
 logger = logging.getLogger(__name__)
 

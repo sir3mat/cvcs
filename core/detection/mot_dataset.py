@@ -1,7 +1,7 @@
 
 import numpy as np
-from src.detection.vision.coco_utils import ConvertCocoPolysToMask, CocoDetection, _coco_remove_images_without_annotations
-from src.detection.vision.transforms import Compose
+from core.detection.vision.coco_utils import ConvertCocoPolysToMask, CocoDetection, _coco_remove_images_without_annotations
+from core.detection.vision.transforms import Compose
 
 
 class UpdateIsCrowd(object):

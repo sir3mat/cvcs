@@ -3,8 +3,8 @@ import os
 from torchinfo import summary
 import torch
 import torch.utils.data
-from src.detection.graph_utils import save_train_loss_plot
-import src.detection.vision.utils as utils
+from core.detection.graph_utils import save_train_loss_plot
+import core.detection.vision.utils as utils
 import coloredlogs
 import logging
 coloredlogs.install(level='DEBUG')

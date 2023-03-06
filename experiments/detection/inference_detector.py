@@ -1,7 +1,7 @@
 import torch
 from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn, FastRCNNPredictor
 from configs.path_cfg import OUTPUT_DIR
-from src.detection.graph_utils import add_bbox, plot_img_tensor
+from core.detection.graph_utils import add_bbox, plot_img_tensor
 import os.path as osp
 import argparse
 from PIL import Image

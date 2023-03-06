@@ -1,17 +1,16 @@
 from configs.path_cfg import OUTPUT_DIR
 import datetime
 import os.path as osp
-import os
 import time
 import coloredlogs
 import logging
 import torch
 import torch.utils.data
-from src.detection.model_factory import ModelFactory
-import src.detection.vision.utils as utils
-from src.detection.vision.engine import train_one_epoch, evaluate
-from tools.experiments.dataset_utils import create_dataset, get_transform, create_data_loader
-from tools.experiments.training_utils import create_lr_scheduler, create_optimizer, save_args, save_evaluate_summary, save_model_checkpoint, save_model_summary, save_plots
+import core.detection.vision.utils as utils
+from core.detection.vision.engine import train_one_epoch, evaluate
+from experiments.detection.dataset_utils import create_dataset, get_transform, create_data_loader
+from torchvision.models.detection.faster_rcnn import fasterrcnn_resnet50_fpn, FastRCNNPredictor
+from experiments.detection.training_utils import create_lr_scheduler, create_optimizer, save_args, save_evaluate_summary, save_model_checkpoint, save_model_summary, save_plots
 
 coloredlogs.install(level='DEBUG')
 logger = logging.getLogger(__name__)
@@ -28,8 +27,8 @@ def get_args_parser(add_help=True):
                         type=str, help="Path to save outputs (default: fasterrcnn_training)")
 
     # Dataset params
-    parser.add_argument("--train-dataset", default="motsynth_split3",
-                        type=str, help="Dataset name. Please select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, MOT17 (default: motsynth_split1)")
+    parser.add_argument("--train-dataset", default="MOT17",
+                        type=str, help="Dataset name. Please select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, motsynth_split4, MOT17 (default: motsynth_split1)")
     parser.add_argument("--val-dataset", default="MOT17",
                         type=str, help="Dataset name. Please select one of the following: MOT17 (default: MOT17)")
 
@@ -50,19 +49,7 @@ def get_args_parser(add_help=True):
 
     # Model param
     parser.add_argument(
-        "--model", default="fasterrcnn_resnet50_fpn", type=str, help="Model name (default: fasterrcnn_resnet50_fpn)")
-    parser.add_argument(
-        "--weights", default="None", type=str, help="Model weights (default: None)"
-    )
-    parser.add_argument(
-        "--backbone", default='resnet50', type=str, help="Type of backbone (default: resnet50)"
-    )
-    parser.add_argument(
-        "--trainable-backbone-layers", default=3, type=int, help="Number of trainable layers of backbone (default: 3)"
-    )
-    parser.add_argument(
-        "--backbone-weights", default="DEFAULT", type=str, help="Backbone weights (default: DEFAULT)"
-    )
+        "--model-path", default="baseline", type=str, help="Model path to fine tune (default: baseline)")
 
     # Device param
     parser.add_argument("--device", default="cuda", type=str,
@@ -71,9 +58,9 @@ def get_args_parser(add_help=True):
     # Optimizer params
     parser.add_argument(
         "--lr",
-        default=0.025,
+        default=0.0025,
         type=float,
-        help="Learning rate (default: 0.025)",
+        help="Learning rate (default: 0.0025)",
     )
     parser.add_argument("--momentum", default=0.9,
                         type=float, metavar="M", help="Momentum (default: 0.9")
@@ -93,7 +80,7 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--lr-steps",
-        default=[8, 16, 22],
+        default=[4, 9, 15],
         nargs="+",
         type=int,
         help="Decrease lr every step-size epochs (multisteplr scheduler only)",
@@ -154,13 +141,18 @@ def main(args):
         dataset_test, "test", batch_size, workers)
 
     logger.debug("CREATE MODEL")
-    model_name = args.model
-    weights = args.weights
-    backbone = args.backbone
-    backbone_weights = args.backbone_weights
-    trainable_backbone_layers = args.trainable_backbone_layers
-    model = ModelFactory.get_model(
-        model_name, weights, backbone, backbone_weights, trainable_backbone_layers)
+    model_path = args.model_path
+    if model_path == "baseline":
+        model = fasterrcnn_resnet50_fpn(weights="DEFAULT")
+        in_features = model.roi_heads.box_predictor.cls_score.in_features
+        model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
+    else:
+        model = fasterrcnn_resnet50_fpn()
+        in_features = model.roi_heads.box_predictor.cls_score.in_features
+        model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
+        checkpoint = torch.load(
+            args.model_path, map_location="cpu")
+        model.load_state_dict(checkpoint["model"])
     save_model_summary(model, output_dir, batch_size)
     model.to(device)
 

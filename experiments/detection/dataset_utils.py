@@ -5,11 +5,11 @@ import coloredlogs
 import logging
 import torch
 import torch.utils.data
-from src.detection.vision.mot_data import MOTObjDetect
-import src.detection.vision.presets as presets
-import src.detection.vision.utils as utils
-from src.detection.vision.group_by_aspect_ratio import GroupedBatchSampler, create_aspect_ratio_groups
-from src.detection.mot_dataset import get_mot_dataset
+from core.detection.vision.mot_data import MOTObjDetect
+import core.detection.vision.presets as presets
+import core.detection.vision.utils as utils
+from core.detection.vision.group_by_aspect_ratio import GroupedBatchSampler, create_aspect_ratio_groups
+from core.detection.mot_dataset import get_mot_dataset
 coloredlogs.install(level='DEBUG')
 logger = logging.getLogger(__name__)
 

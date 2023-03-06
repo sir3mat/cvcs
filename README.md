@@ -74,7 +74,7 @@ python tools/anns/motcha_to_coco.py --data-root ./storage/MOTChallenge
 
 ### Download pretrained models folder from GDrive
 
-You can find all pretrained models [here] (https://drive.google.com/drive/folders/15Lv40x3MquSnKbI4U5aGSZtqQuEmiwMH?usp=share_link) (download them and paste the .pth files in storage/pretrained_models directory).
+You can find all pretrained models [here](https://drive.google.com/drive/folders/15Lv40x3MquSnKbI4U5aGSZtqQuEmiwMH?usp=share_link) (download them and paste the .pth files in storage/pretrained_models directory).
 
 ### Storage directory tree
 

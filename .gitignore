@@ -1,5 +1,10 @@
 #storage folders
-storage/**
+storage/mota
+storage/MOTChallenge
+storage/motsynth_output
+storage/pretrained_models
+storage/MOTSynth
+storage/tracking_videos
 
 error_causing_batch.pth
 

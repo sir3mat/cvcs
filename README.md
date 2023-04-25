@@ -97,8 +97,9 @@ storage
 
 1.  Detection\
      See [docs/DETECTOR.md](docs/DETECTOR.md)
-2.  Re-ID
-3.  Retrieval
+2.  Tracking\
+     See [docs/TRACKER.md](docs/TRACKER.md)
+3.  Retrieval/Re-id from images
 4.  Crowd analysis
 
 ## Colab Usage

@@ -1,6 +1,6 @@
 # Vision-Based pedestrian analysis system
 
-This repository provide the implementation of our paper "NAME OF PAPER" delivered for the "Computer Vision and Cognitive System" course @[UNIMORE](https://www.unimore.it/)
+This repository provides the implementation of our paper "NAME OF PAPER" delivered for the "Computer Vision and Cognitive System" course @[UNIMORE](https://www.unimore.it/)
 
 ## Installation
 
@@ -105,4 +105,4 @@ storage
 ## Colab Usage
 
 You can also use [Google Colab](https://colab.research.google.com) if you need remote resources like GPUs.
-In the notebook folder you can find some useful .ipynb files and remember to load all the storage folder in your GDrive before usage (N.B. you need at least 150/200GB).
+In the notebook folder you can find some useful notebook files and remember to load all the storage folder in your GDrive before usage (N.B. you need at least 150/200 GB).

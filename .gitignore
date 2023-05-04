@@ -17,3 +17,7 @@ src/detection/vision/__pycache__
 custom_out.png
 baseline_out.png
 old_notebook/**
+
+core/distance_estimation/report/image/*.png
+core/distance_estimation/report/video/frames/*.png
+core/distance_estimation/report/video/*.mp4

@@ -96,12 +96,12 @@ storage
 ## Modules
 
 1.  Detection\
-     See [docs/DETECTOR.md](docs/DETECTOR.md)
+    See [docs/DETECTOR.md](docs/DETECTOR.md)
 2.  Tracking\
-     See [docs/TRACKER.md](docs/TRACKER.md)
+    See [docs/TRACKER.md](docs/TRACKER.md)
 3.  Retrieval/Re-id from images
-4.  Crowd analysis
-
+4.  Distance violation detector\
+    See [docs/DISTANCE_VIOLATION_DETECTOR.md](docs/DISTANCE_VIOLATION_DETECTOR.md)
 ## Colab Usage
 
 You can also use [Google Colab](https://colab.research.google.com) if you need remote resources like GPUs.

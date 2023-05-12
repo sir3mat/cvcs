@@ -3,7 +3,6 @@
 Pedestrian reid module is performed using the [torchreid](https://github.com/KaiyangZhou/deep-person-reid/tree/master/torchreid) implementation to train our model. 
 
 # How to use
-An adaption of torchvision's detection reference code is done to train Faster R-CNN on a portion of the MOTSynth dataset.
 
 - To generate reid images and the csv files necessary for training:
 

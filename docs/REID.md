@@ -11,7 +11,7 @@ mkdir ./csv_anns
 
 python ./experiments/reid/data_prep/crop_mots.py --ann-path ./storage/MOTSynth/comb_annotations/train_mini.json --csv-path ./csv_anns/motsynth.csv
 
-python ./tools/anns/store_reid_imgs.py --ann-path ./storage/MOTChallenge/motcha_coco_annotations/MOT17-train.json
+python ./tools/anns/store_reid_imgs.py --ann-path ./storage/MOTChallenge/motcha_coco_annotations/MOT17_train.json
 python ./experiments/reid/data_prep/data.py --anns-dir ./storage/MOTChallenge/motcha_coco_annotations --imgs-dir ./storage/MOTChallenge/MOT17 --csv-dir ./csv_anns
 ```
 

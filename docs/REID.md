@@ -1,6 +1,6 @@
 # Person re-identification
 
-Pedestrian reid module is performed using the [torchreid](https://github.com/KaiyangZhou/deep-person-reid/tree/master/torchreid) implementation to train our model. 
+Pedestrian reid module is performed using the [torchreid](https://github.com/KaiyangZhou/deep-person-reid/tree/master/torchreid) implementation to train our model.
 
 # How to use
 
@@ -9,7 +9,7 @@ Pedestrian reid module is performed using the [torchreid](https://github.com/Kai
 ```
 mkdir ./csv_anns
 
-python ./experiments/reid/data_prep/crop_mots.py --ann-path ./storage/MOTSynth/comb_annotations/train_mini.json --csv-path ./csv_anns/motsynth.csv
+python ./experiments/reid/data_prep/crop_mots.py --ann-path ./storage/MOTSynth/comb_annotations/motsynth.json --csv-path ./csv_anns/motsynth.csv
 
 ```
 
@@ -31,6 +31,5 @@ python setup.py develop
 ```
 cd ..
 
-python ./experiments/reid/reid.py --csv-mots ./csv_anns/motsynth.csv  --img-mots ./storage/MOTSynth/reid 
+python ./experiments/reid/reid.py --csv-mots ./csv_anns/motsynth.csv  --img-mots ./storage/MOTSynth/reid
 ```
-

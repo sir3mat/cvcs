@@ -537,9 +537,9 @@ def resnet18_fc512(num_classes, loss='softmax', pretrained=True, **kwargs):
         layers=[2, 2, 2, 2],
         last_stride=2,
         fc_dims=[512],
-        dropout_p=None,
+        dropout_p=0.1,
         **kwargs
     )
-    #if pretrained:
-        #init_pretrained_weights(model, model_urls['resnet50'])
+    if pretrained:
+        init_pretrained_weights(model, model_urls['resnet18'])
     return model

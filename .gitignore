@@ -21,3 +21,7 @@ old_notebook/**
 core/distance_estimation/report/image/*.png
 core/distance_estimation/report/video/frames/*.png
 core/distance_estimation/report/video/*.mp4
+
+log/**/*
+csv_anns/**/*
+```

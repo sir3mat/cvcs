@@ -47,7 +47,9 @@ rm ./storage/MOTSynth/MOTSynth_coco_annotations.zip
 5. Prepare combined annotations for MOTSynth from the original COCO annotations
 
 ```
-python tools/anns/combine_anns.py --motsynth-path ./storage/MOTSynth
+python tools/anns/combine_anns.py --motsynth-path ./storage/MOTSynth --split motsynth_split3
+
+python tools/anns/combine_anns.py --motsynth-path ./storage/MOTSynth --split motsynth
 ```
 
 6. Prepare motsynth ouput dir for training results
@@ -69,7 +71,7 @@ rm ./storage/MOTChallenge/MOTSynth_1.zip
 2. Generate COCO format annotations
 
 ```
-python tools/anns/motcha_to_coco.py --data-root ./storage/MOTChallenge
+python ./tools/anns/motcha_to_coco.py --data-root storage/MOTChallenge --dataset MOT17 --split train
 ```
 
 ### Download pretrained models folder from GDrive
@@ -103,6 +105,7 @@ storage
     See [docs/REID.md](docs/REID.md)
 4.  Distance violation detector\
     See [docs/DISTANCE_VIOLATION_DETECTOR.md](docs/DISTANCE_VIOLATION_DETECTOR.md)
+
 ## Colab Usage
 
 You can also use [Google Colab](https://colab.research.google.com) if you need remote resources like GPUs.

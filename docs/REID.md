@@ -11,8 +11,6 @@ mkdir ./csv_anns
 
 python ./experiments/reid/data_prep/crop_mots.py --ann-path ./storage/MOTSynth/comb_annotations/train_mini.json --csv-path ./csv_anns/motsynth.csv
 
-python ./tools/anns/store_reid_imgs.py --ann-path ./storage/MOTChallenge/motcha_coco_annotations/MOT17_train.json --frames-path ./storage/MOTChallenge
-python ./experiments/reid/data_prep/data.py --anns-dir ./storage/MOTChallenge/motcha_coco_annotations --imgs-dir ./storage/MOTChallenge/MOT17 --csv-dir ./csv_anns
 ```
 
 - To prepare the environment for torchreid:
@@ -33,6 +31,6 @@ python setup.py develop
 ```
 cd ..
 
-python ./experiments/reid/reid.py --csv-mots ./csv_anns/motsynth.csv --csv-mot17 ./csv_anns/MOT17_tr.csv --img-mots ./storage/MOTSynth/reid --img-mot17 ./storage/MOTChallenge/reid
+python ./experiments/reid/reid.py --csv-mots ./csv_anns/motsynth.csv  --img-mots ./storage/MOTSynth/reid 
 ```
 

@@ -8,17 +8,16 @@ from dataset import get_class
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument('--csv-mots', help="Path to motsynth csv file")
-    parser.add_argument('--csv-mot17', help="Path to mot17 csv file")
-    parser.add_argument('--img-mots', help='Directory where motsynth reid images are saved')
-    parser.add_argument('--img-mot17', help='Directory where mot17 reid images are saved')
-    
+    parser.add_argument('--csv-mots', help='Path to MOTSynth csv file')
+    parser.add_argument('--csv-mot17', help='Path to MOT17 csv file')
+    parser.add_argument('--img-mots', help='Directory where MOTSynth reid images are saved')
+    parser.add_argument('--img-mot17', help='Directoty where MOT17 reid images are saved')
+
     args = parser.parse_args()
 
     return args
 
 def main():
-
     args = parse_args()
 
     dataset_names = ['MOT17', 'MOTSynth']
@@ -32,29 +31,31 @@ def main():
 
     datamanager = torchreid.data.ImageDataManager(
         sources='MOTSynth',
-        targets='MOT17'
+        targets=['market1501'],
+        batch_size_train=64,
+        batch_size_test=64
     )
 
     model = torchreid.models.build_model(
         name="resnet18_fc512",
         num_classes=datamanager.num_train_pids,
         loss="softmax",
-        pretrained=False
+        pretrained=True
     )
 
     if torch.cuda.is_available():
         model = model.cuda()
-    
+
     optimizer = torchreid.optim.build_optimizer(
         model,
-        optim="adam",
-        lr=0.0003
+        optim="amsgrad",
+        lr=0.0009
     )
-    
+
     scheduler = torchreid.optim.build_lr_scheduler(
         optimizer,
         lr_scheduler="single_step",
-        stepsize=20
+        stepsize=15
     )
     
     engine = torchreid.engine.ImageSoftmaxEngine(
@@ -64,12 +65,14 @@ def main():
         scheduler=scheduler,
         label_smooth=True
     )
-    
+
     engine.run(
-        save_dir="log/resnet18",
-        max_epoch=60,
-        eval_freq=10,
-        print_freq=10,
+        save_dir="log/resnet18_fc512",
+        max_epoch=30,
+        fixbase_epoch=7,
+        open_layers=['fc','classifier'],
+        eval_freq=1,
+        start_eval=1,
         test_only=False
     )
 
@@ -77,3 +80,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

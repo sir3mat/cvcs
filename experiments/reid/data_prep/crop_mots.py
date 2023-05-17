@@ -55,7 +55,7 @@ def main(args):
         im2anns[imgid2file[ann['image_id']]].append(ann)
 
     csv_writer = open(args.csv_path, 'w')
-    csv_writer.write('image,ped_id, height, width\n')
+    csv_writer.write('image,ped_id,height,width\n')
     for img_file, im_anns  in tqdm.tqdm(im2anns.items()):
         #break
         # Read Image

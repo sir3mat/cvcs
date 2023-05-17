@@ -31,7 +31,7 @@ def read_anns(data, train=False):
     else:
         df = pd.DataFrame(columns=['image', 'ped_id', 'height', 'width'])
         for row in data['annotations']:
-            name = row['id'] + '.png'
+            name = str(row['id']) + '.png'
             tmp = pd.DataFrame(data=[[name, row['ped_id'], row['bbox'][-1], row['bbox'][-2]]], columns=['image', 'ped_id', 'height', 'width'])
             df = pd.concat([df, tmp], ignore_index=True)
     return df

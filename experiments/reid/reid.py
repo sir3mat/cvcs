@@ -26,7 +26,8 @@ def main():
         sources='MOTSynth',
         targets=['market1501'],
         batch_size_train=64,
-        batch_size_test=64
+        batch_size_test=64,
+        workers=0
     )
 
     model = torchreid.models.build_model(

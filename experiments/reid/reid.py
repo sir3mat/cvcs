@@ -9,9 +9,7 @@ from dataset import get_class
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument('--csv-mots', help='Path to MOTSynth csv file')
-    parser.add_argument('--csv-mot17', help='Path to MOT17 csv file')
     parser.add_argument('--img-mots', help='Directory where MOTSynth reid images are saved')
-    parser.add_argument('--img-mot17', help='Directoty where MOT17 reid images are saved')
 
     args = parser.parse_args()
 
@@ -20,13 +18,8 @@ def parse_args():
 def main():
     args = parse_args()
 
-    dataset_names = ['MOT17', 'MOTSynth']
-    for name in dataset_names:
-        if 'MOT17' in name:
-            dataset_class = get_class(name, args.csv_mot17, args.img_mot17)
-        else:
-            dataset_class = get_class(name, args.csv_mots, args.img_mots)
-        torchreid.data.register_image_dataset(name, dataset_class)
+    dataset_class = get_class('MOTSynth', args.csv_mots, args.img_mots)
+    torchreid.data.register_image_dataset('MOTSynth', dataset_class)
 
 
     datamanager = torchreid.data.ImageDataManager(

@@ -5,6 +5,7 @@ storage/motsynth_output
 storage/pretrained_models
 storage/MOTSynth
 storage/tracking_videos
+storage/market1501
 
 error_causing_batch.pth
 

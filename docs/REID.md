@@ -4,16 +4,7 @@ Pedestrian reid module is performed using the [torchreid](https://github.com/Kai
 
 # How to use
 
-- To generate reid images and the csv files necessary for training:
-
-```
-mkdir ./csv_anns
-
-python ./experiments/reid/data_prep/crop_mots.py --ann-path ./storage/MOTSynth/comb_annotations/motsynth.json --csv-path ./csv_anns/motsynth.csv
-
-```
-
-- To prepare the environment for torchreid:
+1. To prepare the environment for torchreid:
 
 ```
 cd deep-person-reid/
@@ -26,10 +17,22 @@ python setup.py develop
 
 ```
 
-- To run training and test on MOTSynth and MOT17 datasets, respectively:
+2 To run training and test on MOTSynth and MOT17 datasets, respectively:
 
 ```
 cd ..
 
-python ./experiments/reid/reid.py --csv-mots ./csv_anns/motsynth.csv  --img-mots ./storage/MOTSynth/reid
+./scripts/reid/training.sh
 ```
+
+## TensorBoard
+
+The SummaryWriter() for tensorboard will be automatically initialized in engine.run() when you are training your model. Therefore, you do not need to do extra jobs. After the training is done, the _tf.events_ file will be saved in save_dir. Then, you just call in your terminal:
+
+```
+pip install tensorflow tensorboard
+tensorboard --logdir=your_save_dir
+```
+
+Access tensorboard visiting http://localhost:6006/ in a web browser.
+See pytorch tensorboard for further information.

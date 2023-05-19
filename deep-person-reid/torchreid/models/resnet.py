@@ -7,7 +7,8 @@ from torch import nn
 
 __all__ = [
     'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152',
-    'resnext50_32x4d', 'resnext101_32x8d', 'resnet50_fc512'
+    'resnext50_32x4d', 'resnext101_32x8d', 'resnet50_fc512', 'resnet18_fc512', 
+    'resnet_custom',
 ]
 
 model_urls = {
@@ -156,7 +157,7 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
     """Residual network.
-    
+
     Reference:
         - He et al. Deep Residual Learning for Image Recognition. CVPR 2016.
         - Xie et al. Aggregated Residual Transformations for Deep Neural Networks. CVPR 2017.
@@ -350,8 +351,10 @@ class ResNet(nn.Module):
         x = self.layer4(x)
         return x
 
-    def forward(self, x):
+    def forward(self, x, return_featuremaps=False):
         f = self.featuremaps(x)
+        if return_featuremaps:
+            return f
         v = self.global_avgpool(f)
         v = v.view(v.size(0), -1)
 
@@ -373,7 +376,7 @@ class ResNet(nn.Module):
 
 def init_pretrained_weights(model, model_url):
     """Initializes model with pretrained weights.
-    
+
     Layers that don't match with pretrained layers in name or size are kept unchanged.
     """
     pretrain_dict = model_zoo.load_url(model_url)
@@ -529,12 +532,29 @@ def resnet50_fc512(num_classes, loss='softmax', pretrained=True, **kwargs):
         init_pretrained_weights(model, model_urls['resnet50'])
     return model
 
+
 def resnet18_fc512(num_classes, loss='softmax', pretrained=True, **kwargs):
     model = ResNet(
         num_classes=num_classes,
         loss=loss,
         block=BasicBlock,
         layers=[2, 2, 2, 2],
+        last_stride=2,
+        fc_dims=[512],
+        dropout_p=0.1,
+        **kwargs
+    )
+    if pretrained:
+        init_pretrained_weights(model, model_urls['resnet18'])
+    return model
+
+
+def resnet_custom(num_classes, loss='softmax', pretrained=True, **kwargs):
+    model = ResNet(
+        num_classes=num_classes,
+        loss=loss,
+        block=Bottleneck,
+        layers=[2, 4, 4, 2],
         last_stride=2,
         fc_dims=[512],
         dropout_p=0.1,

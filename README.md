@@ -49,10 +49,15 @@ rm ./storage/MOTSynth/MOTSynth_coco_annotations.zip
 ```
 python tools/anns/combine_anns.py --motsynth-path ./storage/MOTSynth --split motsynth_split3
 
-python tools/anns/combine_anns.py --motsynth-path ./storage/MOTSynth --split motsynth
 ```
 
-6. Prepare motsynth ouput dir for training results
+6. Prepare reid images
+
+```
+python tools/anns/store_reid_imgs.py --ann-path ./storage/MOTSynth/comb_annotations/motsynth_split3.json --frames-path ./storage/MOTSynth
+```
+
+7. Prepare motsynth ouput dir for training results
 
 ```
 mkdir ./storage/motsynth_output
@@ -72,6 +77,11 @@ rm ./storage/MOTChallenge/MOTSynth_1.zip
 
 ```
 python ./tools/anns/motcha_to_coco.py --data-root storage/MOTChallenge --dataset MOT17 --split train
+```
+
+3. Generate reid images
+```
+python tools/anns/store_reid_imgs.py --ann-path ./storage/MOTChallenge/motcha_coco_annotations/MOT17-train.json
 ```
 
 ### Download pretrained models folder from GDrive

@@ -5,7 +5,6 @@ from .pcb import *
 from .mlfn import *
 from .hacnn import *
 from .osnet import *
-from .resnet import resnet18_fc512
 from .senet import *
 from .mudeep import *
 from .nasnet import *
@@ -34,6 +33,7 @@ __model_factory = {
     'resnext101_32x8d': resnext101_32x8d,
     'resnet50_fc512': resnet50_fc512,
     'resnet18_fc512': resnet18_fc512,
+    'resnet_custom': resnet_custom,
     'se_resnet50': se_resnet50,
     'se_resnet50_fc512': se_resnet50_fc512,
     'se_resnet101': se_resnet101,

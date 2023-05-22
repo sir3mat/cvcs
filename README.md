@@ -80,13 +80,14 @@ python ./tools/anns/motcha_to_coco.py --data-root storage/MOTChallenge --dataset
 ```
 
 3. Generate reid images
+
 ```
 python tools/anns/store_reid_imgs.py --ann-path ./storage/MOTChallenge/motcha_coco_annotations/MOT17-train.json
 ```
 
 ### Download pretrained models folder from GDrive
 
-You can find all pretrained models for detection and reid [here]https://drive.google.com/drive/folders/1RiVywWYQA6XhhPIntThI1LrT-Up-_eI9?usp=sharing) (download them and paste the .pth files in storage/pretrained_models directory).
+You can find all pretrained models for detection and reid [here](https://drive.google.com/drive/folders/1RiVywWYQA6XhhPIntThI1LrT-Up-_eI9?usp=sharing) (download them and paste the .pth files in storage/pretrained_models directory).
 
 ### Storage directory tree
 
@@ -116,3 +117,6 @@ storage
 4.  Distance violation detector\
     See [docs/DISTANCE_VIOLATION_DETECTOR.md](docs/DISTANCE_VIOLATION_DETECTOR.md)
 
+## Assets
+
+Some images, videos and plots are avaiable [here](https://drive.google.com/drive/folders/1IAz45YagXviQ8C3J4zDzPjf0cBto5KzU?usp=share_link)

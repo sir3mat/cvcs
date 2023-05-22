@@ -1,10 +1,10 @@
-from experiments.reid.mot_reid_dataset import get_sequence_class
-from torchreid.data.datasets import __image_datasets
+from core.reid.mot_reid_dataset import get_sequence_class
+from core.reid.deep_person_reid.torchreid.data.datasets import __image_datasets
 from experiments.reid.default_config import (
     imagedata_kwargs, optimizer_kwargs, videodata_kwargs, engine_run_kwargs,
     get_default_config, lr_scheduler_kwargs
 )
-from torchreid.utils import (
+from core.reid.deep_person_reid.torchreid.utils import (
     Logger, check_isfile, set_random_seed, collect_env_info,
     resume_from_checkpoint, load_pretrained_weights, compute_model_complexity
 )
@@ -18,7 +18,7 @@ from PIL import Image
 from configs.path_cfg import OUTPUT_DIR
 import sys
 import os.path as osp
-from experiments.reid.engine import ImageSoftmaxEngineSeveralSeq
+from core.reid.engine import ImageSoftmaxEngineSeveralSeq
 Image.MAX_IMAGE_PIXELS = None
 
 

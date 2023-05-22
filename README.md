@@ -86,7 +86,7 @@ python tools/anns/store_reid_imgs.py --ann-path ./storage/MOTChallenge/motcha_co
 
 ### Download pretrained models folder from GDrive
 
-You can find all pretrained models [here](https://drive.google.com/drive/folders/15Lv40x3MquSnKbI4U5aGSZtqQuEmiwMH?usp=share_link) (download them and paste the .pth files in storage/pretrained_models directory).
+You can find all pretrained models for detection and reid [here]https://drive.google.com/drive/folders/1RiVywWYQA6XhhPIntThI1LrT-Up-_eI9?usp=sharing) (download them and paste the .pth files in storage/pretrained_models directory).
 
 ### Storage directory tree
 
@@ -116,7 +116,3 @@ storage
 4.  Distance violation detector\
     See [docs/DISTANCE_VIOLATION_DETECTOR.md](docs/DISTANCE_VIOLATION_DETECTOR.md)
 
-## Colab Usage
-
-You can also use [Google Colab](https://colab.research.google.com) if you need remote resources like GPUs.
-In the notebook folder you can find some useful notebook files and remember to load all the storage folder in your GDrive before usage (N.B. you need at least 150/200 GB).

@@ -29,7 +29,7 @@ def get_args_parser(add_help=True):
 
     # Dataset params
     parser.add_argument("--train-dataset", default="motsynth_split3",
-                        type=str, help="Dataset name. Please select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, MOT17 (default: motsynth_split1)")
+                        type=str, help="Dataset name. Please select one of the following:  motsynth_split1, motsynth_split2, motsynth_split3, MOT17 (default: motsynth_split3)")
     parser.add_argument("--val-dataset", default="MOT17",
                         type=str, help="Dataset name. Please select one of the following: MOT17 (default: MOT17)")
 

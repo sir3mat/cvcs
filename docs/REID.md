@@ -7,7 +7,7 @@ Pedestrian reid module is performed using the [torchreid](https://github.com/Kai
 1. To prepare the environment for torchreid:
 
 ```
-cd deep-person-reid/
+cd core/reid/deep-person-reid/
 
 pip install -r requirements.txt
 
@@ -20,8 +20,6 @@ python setup.py develop
 2 To run training and test on MOTSynth and MOT17 datasets, respectively:
 
 ```
-cd ..
-
 ./scripts/reid/training.sh
 ```
 

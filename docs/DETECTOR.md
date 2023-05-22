@@ -1,14 +1,6 @@
 # Pedestrian detection
 
-Pedestrian detection module is based on the "Domain adaption on pedestrian detection with Faster R-CNN" paper written by Matteo Sirri for the "School in AI: Deep Learning, Vision and Language for Industry - second edition" final project work [@UNIMORE](https://www.unimore.it)
-
-## Demo Links
-
-|                                                                    Google Colab Demo                                                                    |                                                                       Huggingface Demo                                                                        |                                                    Report                                                     |
-| :-----------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: |
-| [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1KQqmPANWiLqAJH0yZN1UV_FVqnzPrurw) | [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/sir3mat/SchoolInAiProjectWork) | [Report](https://docs.google.com/document/d/1U0yEuGx5wJ8xkZUpdMQS59XM9V7IidX-vzX9bOh6iEM/edit?usp=share_link) |
-
-- Integrated to [Huggingface Spaces](https://huggingface.co/spaces) with [Gradio](https://github.com/gradio-app/gradio).
+The Pedestrian detection module utilizes a Faster R-CNN architecture that has been specifically trained using synthetic data from MOTSynth. This training approach includes domain adaptation techniques to enhance the module's performance in real-world scenarios.
 
 ## Object Detection
 

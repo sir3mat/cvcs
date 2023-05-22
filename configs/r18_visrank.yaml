@@ -1,0 +1,26 @@
+model:
+  name: "resnet18"
+  load_weights: "log/resnet18_motsynth_split3_train_mot17_test/model/resnet18_best.tar-9"
+
+data:
+  type: "image"
+  sources: ["motsynth_split3"]
+  targets: ["mot17"]
+  height: 256
+  width: 128
+  combineall: False
+  transforms: ["random_flip"]
+  save_dir: "log/resnet18_visrank"
+  root: "c:/Users/Matteo/Desktop/cvcs/storage"
+  workers: 0
+
+test:
+  batch_size: 64
+  dist_metric: "euclidean"
+  normalize_feature: False
+  evaluate: True
+  eval_freq: 1
+  rerank: False
+  visrank: True
+  visrank_topk: 10
+  start_eval: 1

@@ -1,11 +1,11 @@
-import mouse_click_event
+import core.distance_estimation.mouse_click_event as mouse_click_event
 import torch
 import torchvision.transforms as transforms
 import numpy as np
 import cv2 as cv
 from PIL import Image
 from scipy.spatial import distance as dist
-from settings import get_settings
+from core.distance_estimation.settings import get_settings
 settings = get_settings()
 
 

@@ -5,18 +5,18 @@ This module uses the Detector module for people detection.
 
 ## Usage
 
-For image, run:
+For image, run (change params in script):
 
 ```
-python core/distance_estimation/image.py --input input.png --model path-to-model.pth
+./scripts/image.sh
 ```
 
-For video, run:
+For video, run ((change params in script)):
 
 ```
-python core/distance_estimation/video.py --input input.mp4 --model path-to-model.pth
+./scripts/video.sh
 ```
-
 
 ## Acknowledgements
+
 - The original [DeepFusionAI/social-distance-detector](https://github.com/DeepFusionAI/social-distance-detector) repository that uses Tensorflow and YoloV3

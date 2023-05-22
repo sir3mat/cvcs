@@ -1,0 +1,57 @@
+MotChallenge2DBox
+PerfectTracker
+Traceback (most recent call last):
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\eval.py", line 113, in evaluate
+    res[curr_seq] = eval_sequence(curr_seq, dataset, tracker, class_list, metrics_list,
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\_timing.py", line 17, in wrap
+    result = f(*args, **kw)
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\eval.py", line 222, in eval_sequence
+    data = dataset.get_preprocessed_seq_data(raw_data, cls)
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\_timing.py", line 17, in wrap
+    result = f(*args, **kw)
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\datasets\mot_challenge_2d_box.py", line 353, in get_preprocessed_seq_data
+    raise TrackEvalException(
+trackeval.utils.TrackEvalException: Evaluation is only valid for pedestrian class. Non pedestrian class (12) found in sequence MOT17-09-FRCNN at timestep 0.
+
+
+
+
+
+MotChallenge2DBox
+PerfectTracker
+Traceback (most recent call last):
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\eval.py", line 113, in evaluate
+    res[curr_seq] = eval_sequence(curr_seq, dataset, tracker, class_list, metrics_list,
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\_timing.py", line 17, in wrap
+    result = f(*args, **kw)
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\eval.py", line 222, in eval_sequence
+    data = dataset.get_preprocessed_seq_data(raw_data, cls)
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\_timing.py", line 17, in wrap
+    result = f(*args, **kw)
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\datasets\mot_challenge_2d_box.py", line 353, in get_preprocessed_seq_data
+    raise TrackEvalException(
+trackeval.utils.TrackEvalException: Evaluation is only valid for pedestrian class. Non pedestrian class (12) found in sequence MOT17-09-FRCNN at timestep 0.
+
+
+
+
+
+MotChallenge2DBox
+PerfectTracker
+Traceback (most recent call last):
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\eval.py", line 113, in evaluate
+    res[curr_seq] = eval_sequence(curr_seq, dataset, tracker, class_list, metrics_list,
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\_timing.py", line 17, in wrap
+    result = f(*args, **kw)
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\eval.py", line 222, in eval_sequence
+    data = dataset.get_preprocessed_seq_data(raw_data, cls)
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\_timing.py", line 17, in wrap
+    result = f(*args, **kw)
+  File "C:\Users\Matteo\Desktop\cvcs\core\tracking\TrackEval\trackeval\datasets\mot_challenge_2d_box.py", line 353, in get_preprocessed_seq_data
+    raise TrackEvalException(
+trackeval.utils.TrackEvalException: Evaluation is only valid for pedestrian class. Non pedestrian class (12) found in sequence MOT17-09-FRCNN at timestep 0.
+
+
+
+
+

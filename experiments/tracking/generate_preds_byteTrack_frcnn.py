@@ -20,6 +20,22 @@ from experiments.detection.dataset_utils import  get_MOT17_dataset, get_transfor
 coloredlogs.install(level='DEBUG')
 logger = logging.getLogger(__name__)
 
+def get_args_parser(add_help=True):
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Generate Tracking predictions", add_help=add_help)
+
+    parser.add_argument("--results-folder",
+                        type=str, help="path to store predictions")
+
+    parser.add_argument("--model",
+                        type=str, help="detection model path")
+
+    return parser
+
+
+
 
 @dataclass(frozen=True)
 class BYTETrackerArgs:
@@ -86,7 +102,7 @@ def write_results(filename, results):
     logger.info('save results to {}'.format(filename))
 
 
-def generate_prediction(results_folder: str, ts_file: str):
+def generate_prediction(results_folder: str, ts_file: str, model_path:str):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.debug(f"DEVICE: {device}")
 
@@ -100,7 +116,6 @@ def generate_prediction(results_folder: str, ts_file: str):
     data_loader = create_data_loader(
         dataset_test, "test", batch_size, workers)
 
-    model_path = "c:/Users/Matteo/Desktop/cvcs/storage/pretrained_models/model_split3_FT_MOT17.pth"
     device = torch.device("cuda")
     model = fasterrcnn_resnet50_fpn()
     in_features = model.roi_heads.box_predictor.cls_score.in_features
@@ -161,7 +176,9 @@ def generate_prediction(results_folder: str, ts_file: str):
 if __name__ == "__main__":
     mot17_09 = "MOT17-09-FRCNN"
     mot17_10 = "MOT17-10-FRCNN"
-    results_folder = 'c:/Users/Matteo/Desktop/cvcs/storage/mota'
+    args = get_args_parser().parse_args()
+    model_path = args.model
+    results_folder = args.results_folder
 
-    generate_prediction(results_folder, mot17_09)
-    generate_prediction(results_folder, mot17_10)
+    generate_prediction(results_folder, mot17_09, model_path)
+    generate_prediction(results_folder, mot17_10, model_path)

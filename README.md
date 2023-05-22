@@ -111,7 +111,7 @@ storage
     See [docs/DETECTOR.md](docs/DETECTOR.md)
 2.  Tracking\
     See [docs/TRACKER.md](docs/TRACKER.md)
-3.  Retrieval/Re-id from images\
+3.  Retrieval/Re-id\
     See [docs/REID.md](docs/REID.md)
 4.  Distance violation detector\
     See [docs/DISTANCE_VIOLATION_DETECTOR.md](docs/DISTANCE_VIOLATION_DETECTOR.md)

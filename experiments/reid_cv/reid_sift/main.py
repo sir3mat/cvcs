@@ -42,6 +42,8 @@ def main(args):
     pt = Plotter()
     
     fldr = osp.join(osp.dirname(osp.dirname(args.imgs_dir)), 'motsynth_output/reid_sift')
+    if not osp.exists(fldr):
+        os.mkdir(fldr)
 
     AP_vector = []
     query = query.reset_index().drop('index', axis=1)

@@ -1,24 +1,26 @@
-from retrieval_manager import RetrievalManager
-from retrieval_helper import RetrievalHelper
-from evaluation.plotter import Plotter
 import cv2
 import os.path as osp
 import os
-from evaluation.evaluator import Evaluator
+import sys
 import numpy as np
 from argparse import ArgumentParser
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
+from retrieval_manager import RetrievalManager
+from retrieval_helper import RetrievalHelper
+from evaluation.plotter import Plotter
+from evaluation.evaluator import Evaluator
+
 
 
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument('--ann-path', type=str, required=True, help='Path to the mot17 json annotation file.')
     parser.add_argument('--imgs-dir', type=str, required=True, help='Directory where reid images are saved.')
-    parser.add_argument('--pkl-dir', type=str, help='Directory where descriptors file is saved. If not provided, the annotation directory is used.')
 
     args = parser.parse_args()
-
-    if args.pkl_dir is None:
-        args.pkl_dir = osp.join(osp.dirname(osp.dirname(osp.dirname(args.ann_path))), 'MOTSynth')
 
     return args
 
@@ -30,12 +32,16 @@ def main(args):
     rh = RetrievalHelper(args.ann_path)
     query, gallery = rh.generate_retrieval_sets()
     
-    print('Generating dictionary...')
+    print('Initializing...')
     rm = RetrievalManager(args.imgs_dir)
     
     pt = Plotter()
     
-    fldr = osp.join(osp.dirname(osp.dirname(args.imgs_dir)), 'motsynth_output/reid_color_hist')
+    if 'MOTSynth' in args.imgs_dir:
+        fldr = osp.join(osp.dirname(osp.dirname(args.imgs_dir)), 'motsynth_output/reid_color_hist_mots')
+    else:
+        fldr = osp.join(osp.dirname(osp.dirname(args.imgs_dir)), 'motsynth_output/reid_color_hist_mot17')
+    
     if not osp.exists(fldr):
         os.mkdir(fldr)
 

@@ -1,11 +1,18 @@
+import os
+import sys
+import cv2
+import os.path as osp
+import numpy as np
+from argparse import ArgumentParser
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
 from retrieval_manager import RetrievalManager
 from retrieval_helper import RetrievalHelper
 from evaluation.plotter import Plotter
-import cv2
-import os.path as osp
 from evaluation.evaluator import Evaluator
-import numpy as np
-from argparse import ArgumentParser
+
 
 
 def parse_args():

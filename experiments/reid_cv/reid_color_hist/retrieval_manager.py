@@ -1,9 +1,6 @@
-import pickle
-import json
 import cv2
 import os.path as osp
 import numpy as np
-from scipy.spatial.distance import cdist
 from sklearn.metrics.pairwise import cosine_similarity
 
 

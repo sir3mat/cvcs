@@ -1,8 +1,10 @@
 # Person re-identification
 
-Pedestrian reid module is performed using the [torchreid](https://github.com/KaiyangZhou/deep-person-reid/tree/master/torchreid) implementation to train our model.
+Pedestrian reid module is performed using the [torchreid](https://github.com/KaiyangZhou/deep-person-reid/tree/master/torchreid) implementation to train our model and implementing more classical approches with Bag-Of-Word (BOW) model and color histograms.
 
 # How to use
+
+## Torchreid
 
 1. To prepare the environment for torchreid:
 
@@ -17,13 +19,13 @@ python setup.py develop
 
 ```
 
-2 To run training and test on MOTSynth and MOT17 datasets, respectively:
+2. To run training and test on MOTSynth and MOT17 datasets, respectively:
 
 ```
 ./scripts/reid/training.sh
 ```
 
-## TensorBoard
+### TensorBoard
 
 The SummaryWriter() for tensorboard will be automatically initialized in engine.run() when you are training your model. Therefore, you do not need to do extra jobs. After the training is done, the _tf.events_ file will be saved in save_dir. Then, you just call in your terminal:
 
@@ -34,3 +36,25 @@ tensorboard --logdir=your_save_dir
 
 Access tensorboard visiting http://localhost:6006/ in a web browser.
 See pytorch tensorboard for further information.
+
+## Bag-Of-Word
+
+1. To prepare training descriptors for BOW dictionary generation:
+
+```
+./scripts/reid_cv/compute_sift.sh
+```
+
+2. To retrieve similar images:
+
+```
+./scripts/reid_cv/reid_sift.sh
+```
+
+## Color Histograms
+
+Run the script that performs the reid task:
+
+```
+./scripts/reid_cv/reid_color_hist.sh
+```

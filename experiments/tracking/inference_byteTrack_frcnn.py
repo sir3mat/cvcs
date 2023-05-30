@@ -175,14 +175,11 @@ def preditct_annotate_video(source_video_path: str, target_video_path: str, mode
     video_info = VideoInfo.from_video_path(SOURCE_VIDEO_PATH)
     # create frame generator
     generator = get_video_frames_generator(SOURCE_VIDEO_PATH)
-    # create LineCounter instance
-    line_counter = LineCounter(start=LINE_START, end=LINE_END)
+   
     # create instance of BoxAnnotator and LineCounterAnnotator
     box_annotator = BoxAnnotator(color=ColorPalette(
-    ), thickness=1, text_thickness=1, text_scale=1)
-    line_annotator = LineCounterAnnotator(
-        thickness=1, text_thickness=1, text_scale=1)
-
+    ), thickness=1, text_thickness=1, text_scale=0.5)
+    
     # open target video file
     with VideoSink(TARGET_VIDEO_PATH, video_info) as sink:
         # loop over video frames
@@ -230,12 +227,9 @@ def preditct_annotate_video(source_video_path: str, target_video_path: str, mode
                 in detections
             ]
 
-            # updating line counter
-            line_counter.update(detections=detections)
             # annotate and display frame
             frame = box_annotator.annotate(
                 frame=frame, detections=detections, labels=labels)
-            line_annotator.annotate(frame=frame, line_counter=line_counter)
             sink.write_frame(frame)
 
 

@@ -46,8 +46,8 @@ def getmap(image):
     h, w = image.shape[:2]
 
     # 4 corner points of image are set by default
-    corners = [[int(w*0.4), int(w*0.4)], [int(w*0.6), int(w*0.4)],
-               [int(w*0.6), int(w*0.6)], [int(w*0.4), int(w*0.6)]]
+    corners = [[int(w*0.4), int(h*0.4)], [int(w*0.6), int(h*0.4)],
+               [int(w*0.6), int(h*0.6)], [int(w*0.4), int(h*0.6)]]
 
     # User needs to finalise the corner points of a road or floor by dragging and dropping the corners
     corners = mouse_click_event.adjust_coor_quad(image, corners)

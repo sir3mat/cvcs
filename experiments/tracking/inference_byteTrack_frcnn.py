@@ -87,70 +87,10 @@ def match_detections_with_tracks(
 
     return tracker_ids
 
-
-# def preditct_annotate_single_frame():
-#     SOURCE_VIDEO_PATH = "c:/Users/Matteo/Desktop/cvcs/082.mp4"
-
-#     model_path = "c:/Users/Matteo/Desktop/cvcs/storage/pretrained_models/model_split3_FT_MOT17.pth"
-#     device = torch.device("cuda")
-#     model = fasterrcnn_resnet50_fpn()
-#     in_features = model.roi_heads.box_predictor.cls_score.in_features
-#     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
-#     checkpoint = torch.load(model_path, map_location="cpu")
-#     model.load_state_dict(checkpoint["model"])
-#     model.to(device)
-#     model.eval()
-
-#     # dict maping class_id to class_name
-#     CLASS_NAMES_DICT = {1: "person"}
-#     # class_ids of interest - person
-#     CLASS_ID = [1]
-
-#     # create frame generator
-#     generator = get_video_frames_generator(SOURCE_VIDEO_PATH)
-#     # create instance of BoxAnnotator
-#     box_annotator = BoxAnnotator(
-#         color=ColorPalette(), thickness=1, text_thickness=1, text_scale=1)
-#     # acquire first video frame
-#     iterator = iter(generator)
-#     frame = next(iterator)
-
-#     # model prediction on single frame and conversion to supervision Detections
-#     transform = transforms.Compose([
-#         transforms.ToTensor(),
-#     ])
-#     image = transform(frame).to(device)
-#     image = image.unsqueeze(0)
-#     results = model(image)
-
-#     results = results[0]
-#     boxes_t: torch.Tensor = results["boxes"]
-#     scores_t: torch.Tensor = results["scores"]
-#     labels_t: torch.Tensor = results["labels"]
-
-#     detections = Detections(
-#         xyxy=boxes_t.detach().cpu().resolve_conj().resolve_neg().numpy(),
-#         confidence=scores_t.detach().cpu().resolve_conj().resolve_neg().numpy(),
-#         class_id=labels_t.detach().cpu().resolve_conj().resolve_neg().numpy().astype(int)
-#     )
-#     # format custom labels
-#     labels = [
-#         f"{CLASS_NAMES_DICT[class_id]} {confidence:0.2f}"
-#         for _, confidence, class_id, tracker_id
-#         in detections
-#     ]
-#     # annotate and display frame
-#     frame = box_annotator.annotate(
-#         frame=frame, detections=detections, labels=labels)
-
-#     show_frame_in_notebook(frame, (16, 16))
-
-
-def preditct_annotate_video(source_video_path: str, target_video_path: str, model_path: str):
+def predict_annotate_video(source_video_path: str, target_video_path: str, model_path: str):
     SOURCE_VIDEO_PATH = source_video_path
     # settings
-    LINE_START = Point(50, 1500)
-    LINE_END = Point(3840-50, 1500)
+    
     TARGET_VIDEO_PATH = target_video_path
     VideoInfo.from_video_path(SOURCE_VIDEO_PATH)
 
@@ -176,7 +116,7 @@ def preditct_annotate_video(source_video_path: str, target_video_path: str, mode
     # create frame generator
     generator = get_video_frames_generator(SOURCE_VIDEO_PATH)
    
-    # create instance of BoxAnnotator and LineCounterAnnotator
+    # create instance of BoxAnnotator
     box_annotator = BoxAnnotator(color=ColorPalette(
     ), thickness=1, text_thickness=1, text_scale=0.5)
     
@@ -238,4 +178,4 @@ if __name__ == "__main__":
     source_video_path = args.source_video
     target_video_path = args.target_video
     model_path = args.model
-    preditct_annotate_video(source_video_path, target_video_path, model_path)
+    predict_annotate_video(source_video_path, target_video_path, model_path)

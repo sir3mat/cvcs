@@ -4,7 +4,6 @@ import pickle
 import cv2
 import os.path as osp
 import pandas as pd
-from sift_helper import SIFTHelper
 import tqdm
 import numpy as np
 
@@ -14,7 +13,6 @@ def parse_args():
     parser.add_argument('--ann-path', type=str, required=True, help='Path to the mot17 json annotation file.')
     parser.add_argument('--imgs-dir', type=str, required=True, help='Directory where reid images are saved.')
     parser.add_argument('--pkl-dir', type=str, help='Directory where descriptors file is saved. If not provided, the annotation directory is used.')
-    parser.add_argument('--pb-path', type=str, help='Full path to pb model for super resolution.')
 
     args = parser.parse_args()
 
@@ -47,15 +45,12 @@ def main(args):
     fn = lambda obj: obj.loc[np.random.choice(obj.index, 100, False),:]
     df = df.groupby('ped_id', as_index=False).apply(fn)
 
-    #sh = SIFTHelper()
-
     descriptors = []
     
     for img in tqdm.tqdm(df['id'].values):
         path = osp.join(dataset_path, str(img) + '.png')
         
         img = cv2.imread(path, cv2.COLOR_BGR2RGB)
-        #img = sh.super_res(img, args.pb_path)
         gray_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
         sift = cv2.SIFT_create()

@@ -33,5 +33,5 @@ class Plotter():
             ax5 = fig.add_subplot(gs[i, 4])
             ax5.imshow(similar_images[5 * (i-1) + 4])
 
-        #plt.savefig(fldr + '/res' + str(count) + '.png')
-        plt.show()
+        plt.savefig(fldr + '/res' + str(count) + '.png')
+        #plt.show()

@@ -50,11 +50,3 @@ See pytorch tensorboard for further information.
 ```
 ./scripts/reid_cv/reid_sift.sh
 ```
-
-## Color Histograms
-
-Run the script that performs the reid task:
-
-```
-./scripts/reid_cv/reid_color_hist.sh
-```

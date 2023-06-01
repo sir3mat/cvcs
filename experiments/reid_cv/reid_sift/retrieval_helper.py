@@ -24,7 +24,7 @@ class RetrievalHelper():
         df['id'] = ids
         tmp = df.groupby('ped_id')['id'].count()
         df = df.join(tmp, on='ped_id', how='left', rsuffix='_count')
-        df = df[df['id_count'] >= 15]
+        df = df[df['id_count'] >= 10]
 
         df['index'] = df.index.values
         np.random.seed(0)

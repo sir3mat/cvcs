@@ -62,13 +62,12 @@ def process(video, output_path, model_path):
         image = visualise_main(image, results, violate)
 
         """ Creating final output frame """
-        output = cv.hconcat((image, cv.rotate(warped, cv.ROTATE_90_CLOCKWISE)))
+        output = cv.hconcat((image, warped))
         output = cv.hconcat((output, grid))
         out.write(output)
 
         if picId % 30 == 0:
-            saveReportImages(image, picId, grid, cv.rotate(
-                warped, cv.ROTATE_90_CLOCKWISE), output_path)
+            saveReportImages(image, picId, grid, warped, output_path)
         if picId == 300:
             break
         picId += 1

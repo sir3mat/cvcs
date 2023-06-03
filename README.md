@@ -1,6 +1,6 @@
-# Vision-Based pedestrian analysis system
+# Exploring the Potential of Synthetic Data for Pedestrian Analysis
 
-This repository provides the implementation of our paper "NAME OF PAPER" delivered for the "Computer Vision and Cognitive System" course @[UNIMORE](https://www.unimore.it/)
+This repository provides the implementation of our paper "Exploring the Potential of Synthetic Data for Pedestrian Analysis" delivered for the "Computer Vision and Cognitive System" course @[UNIMORE](https://www.unimore.it/)
 
 ## Installation
 
@@ -120,3 +120,11 @@ storage
 ## Assets
 
 Some images, videos and plots are avaiable [here](https://drive.google.com/drive/folders/1IAz45YagXviQ8C3J4zDzPjf0cBto5KzU?usp=share_link)
+
+# Authors
+- [Sirri Matteo](https://github.com/sir3mat)
+    - email: 254179@studenti.unimore.it
+- [Manghi Ilaria](https://github.com/ilariamanghi)
+    - email: 244770@studenti.unimore.it
+- [Riccardo Benini](https://github.com/RiccardoBenini98) 
+    - email: 244321@studenti.unimore.it

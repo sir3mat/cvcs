@@ -2,6 +2,8 @@
 
 Pedestrian tracking module follows the tracking by detection paradigm using the pedestrian detection module and ByteTrack for track people
 
+![til](../assets/tracking.gif)
+
 # How to use
 
 - To generate prediction you can run (change params in the script):

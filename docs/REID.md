@@ -37,7 +37,7 @@ tensorboard --logdir=your_save_dir
 Access tensorboard visiting http://localhost:6006/ in a web browser.
 See pytorch tensorboard for further information.
 
-You can also see the results of our experiments here using different metrics: [Euclidean metric](https://tensorboard.dev/experiment/jUQ3fPLwR0azkBvdgzr3pg/#scalars&_smoothingWeight=0), [Cosine Metric](https://tensorboard.dev/experiment/2i1qCGnGRaeaigVnzkzIRQ/#scalars), [Not Normalized Euclidean metric](https://tensorboard.dev/experiment/Yl7ikSlbQruBtRagdVOX6g/#scalars)
+You can also see the results of our experiments here using different metrics: [Euclidean metric](https://tensorboard.dev/experiment/jUQ3fPLwR0azkBvdgzr3pg/#scalars), [Cosine Metric](https://tensorboard.dev/experiment/2i1qCGnGRaeaigVnzkzIRQ/#scalars), [Not Normalized Euclidean metric](https://tensorboard.dev/experiment/Yl7ikSlbQruBtRagdVOX6g/#scalars)
 
 ## Bag-Of-Word
 

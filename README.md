@@ -119,7 +119,7 @@ storage
 
 ## Assets
 
-Some images, videos and plots are avaiable [here](https://drive.google.com/drive/folders/1IAz45YagXviQ8C3J4zDzPjf0cBto5KzU?usp=share_link)
+Some images, videos and plots are available [here](https://drive.google.com/drive/folders/1IAz45YagXviQ8C3J4zDzPjf0cBto5KzU?usp=share_link)
 
 # Authors
 - [Sirri Matteo](https://github.com/sir3mat)

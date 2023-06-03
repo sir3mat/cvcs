@@ -1,6 +1,6 @@
 model:
   name: "resnet_custom"
-  load_weights: "log/cosine/resnet_custom_motsynth_split3_train_mot17_test/model/resnet_custom_best.tar-17"
+  load_weights: "log/cosine/resnet_custom_motsynth_split3_train_mot17_test/model/resnetCustom_best.pth.tar-18"
 
 data:
   type: "image"

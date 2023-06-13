@@ -128,3 +128,6 @@ Some images, videos and plots are available [here](https://drive.google.com/driv
     - email: 244770@studenti.unimore.it
 - [Riccardo Benini](https://github.com/RiccardoBenini98) 
     - email: 244321@studenti.unimore.it
+
+# Acknowledgements
+This codebase is built on top of several great works. Our detection code is based on the [MOTSynth_baseline] (https://github.com/dvl-tum/motsynth-baselines). For MOT, we use [BYTE] algorithm (https://github.com/ifzhang/ByteTrack), and for ReID, we use the torchreid framework. We thank all the authors of these codebases for their amazing work.
